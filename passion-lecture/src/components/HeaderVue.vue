@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <img src="../assets/logo.svg" />
+    <img src="../assets/logo.svg" class="logo" />
     <div class="auth-area">
       <nav>
         <router-link to="/">Accueil</router-link>
@@ -59,8 +59,9 @@ body {
 .header {
   display: flex;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 20px;
   background: #0f172a;
+  align-items: center;
 }
 nav {
   display: flex;
@@ -76,5 +77,8 @@ nav {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+.logo {
+  height: 63px;
 }
 </style>

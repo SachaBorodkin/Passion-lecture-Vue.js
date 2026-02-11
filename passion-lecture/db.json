@@ -1,16 +1,6 @@
 {
   "users": [
     {
-      "id": 0,
-      "username": "Admin",
-      "password": "test",
-      "entryDate": "2026-02-11",
-      "bookNumber": "0",
-      "rateNumber": 0,
-      "commentnumber": 0,
-      "isAdmin": true
-    },
-    {
       "id": "631c",
       "username": "user",
       "password": "$2b$10$AR7KUJmSouy4Tf5c73knWu4CCrR7VX363MM/TUTe4glyelc17GR6O",
@@ -87,5 +77,6 @@
       "added": "2026-02-10",
       "coverImage": "https://covers.openlibrary.org/b/id/12832560-L.jpg"
     }
-  ]
+  ],
+  "categories": ["Roman", "Manga", "Bande dessinée"]
 }
