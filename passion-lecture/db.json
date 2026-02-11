@@ -1,0 +1,15 @@
+{
+  "users": [
+    {
+      "id": 0,
+      "username": "Oleksandr",
+      "password": "testpass",
+      "entryDate": "2026-02-11",
+      "bookNumber": "0",
+      "rateNumber": 0,
+      "commentnumber": 0,
+      "isAdmin": true
+    }
+  ],
+  "books": []
+}
