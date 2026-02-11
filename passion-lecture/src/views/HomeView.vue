@@ -34,6 +34,10 @@ onMounted(() => {
 .home {
   font-family: 'Jaldi', sans-serif;
   justify-content: center;
+  font-size: 33px;
+  text-align: center;
+}
+.home h1 {
 }
 .content-grid {
   display: grid;

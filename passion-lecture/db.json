@@ -31,5 +31,48 @@
       "isAdmin": false
     }
   ],
-  "books": []
+  "books": [
+    {
+      "id": 1,
+      "title": "Le Mystère de la Chambre Jaune",
+      "category": "Roman",
+      "pageCount": 240,
+      "excerpt": "/assets/pdf/mystere_chambre_jaune_p1.pdf",
+      "summary": "Une aventure classique du jeune reporter Rouletabille s'attaquant à une énigme de chambre close.",
+      "author": "Gaston Leroux",
+      "editor": "Éditions du Livre",
+      "publishYear": 1907,
+      "userRating": 0,
+      "comments": [],
+      "coverImage": "https://covers.openlibrary.org/b/id/8231992-L.jpg"
+    },
+    {
+      "id": 2,
+      "title": "Naruto - Tome 1",
+      "category": "Manga",
+      "pageCount": 192,
+      "excerpt": "/assets/pdf/naruto_v1_p1.pdf",
+      "summary": "L'histoire d'un jeune ninja qui rêve de devenir Hokage pour obtenir la reconnaissance de son village.",
+      "author": "Masashi Kishimoto",
+      "editor": "Kana",
+      "publishYear": 1999,
+      "userRating": 0,
+      "comments": [],
+      "coverImage": "https://covers.openlibrary.org/b/id/10526771-L.jpg"
+    },
+    {
+      "id": 3,
+      "title": "Tintin au Tibet",
+      "category": "Bande dessinée",
+      "pageCount": 62,
+      "excerpt": "/assets/pdf/tintin_tibet_p1.pdf",
+      "summary": "Tintin part à la recherche de son ami Tchang, disparu dans l'Himalaya après un accident d'avion.",
+      "author": "Hergé",
+      "editor": "Casterman",
+      "publishYear": 1960,
+      "userRating": 0,
+      "comments": [],
+      "coverImage": "https://covers.openlibrary.org/b/id/12832560-L.jpg"
+    }
+  ]
 }
