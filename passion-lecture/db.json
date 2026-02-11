@@ -2,8 +2,8 @@
   "users": [
     {
       "id": 0,
-      "username": "Oleksandr",
-      "password": "testpass",
+      "username": "Admin",
+      "password": "test",
       "entryDate": "2026-02-11",
       "bookNumber": "0",
       "rateNumber": 0,
