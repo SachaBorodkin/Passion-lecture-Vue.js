@@ -1,20 +1,20 @@
 <template>
-  <header class="app-header">
-    <nav>
-      <router-link to="/">Accueil</router-link>
-
-      <div v-if="isLoggedIn" class="user-profile">
-        <img
-          src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
-          alt="Avatar"
-          class="avatar"
-        />
-        <span>{{ currentUser.username }}</span>
-        <button @click="logout" class="logout-btn">Déconnexion</button>
+  <header class="header">
+    <img src="../assets/logo.svg" />
+    <div class="auth-area">
+      <nav>
+        <router-link to="/">Accueil</router-link>
+      </nav>
+      <div v-if="user" class="profile">
+        <img src="../assets/avatar.png" class="avatar" />
+        <button @click="logout">Déconnexion</button>
       </div>
-
-      <router-link v-else to="/login" class="login-link"> Se connecter </router-link>
-    </nav>
+      <div v-else class="auth-links">
+        <router-link to="/login">Se connecter</router-link>
+        <span> | </span>
+        <router-link to="/register">S'inscrire</router-link>
+      </div>
+    </div>
   </header>
 </template>
 
@@ -22,66 +22,45 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
-const isLoggedIn = ref(false)
-const currentUser = ref(null)
+const user = ref(null)
 const router = useRouter()
 
-const checkLoginStatus = () => {
-  const user = localStorage.getItem('user')
-  if (user) {
-    isLoggedIn.value = true
-    currentUser.value = JSON.parse(user)
-  } else {
-    isLoggedIn.value = false
-    currentUser.value = null
-  }
+const updateStatus = () => {
+  const data = localStorage.getItem('user')
+  user.value = data ? JSON.parse(data) : null
 }
 
 const logout = () => {
   localStorage.removeItem('user')
-  checkLoginStatus()
+  updateStatus()
   router.push('/login')
 }
 
-// Check status when component loads
 onMounted(() => {
-  checkLoginStatus()
+  updateStatus()
+  // Listen for the login event
+  window.addEventListener('login-success', updateStatus)
 })
 </script>
 
 <style scoped>
-.app-header {
+body {
+  margin: 0;
+}
+.header {
   display: flex;
   justify-content: space-between;
   padding: 1rem;
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #ddd;
+  background: #0f172a;
 }
-
-.user-profile {
+.avatar {
+  width: 30px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+.profile {
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.avatar {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  background-color: #ccc;
-}
-
-.login-link {
-  text-decoration: none;
-  font-weight: bold;
-  color: #42b983;
-}
-
-.logout-btn {
-  background: none;
-  border: 1px solid #ccc;
-  cursor: pointer;
-  padding: 2px 8px;
-  font-size: 0.8rem;
 }
 </style>

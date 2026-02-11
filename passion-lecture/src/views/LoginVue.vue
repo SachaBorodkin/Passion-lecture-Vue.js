@@ -1,9 +1,9 @@
 <template>
-  <div class="auth-container">
-    <h2>Login</h2>
+  <div class="auth-form">
+    <h2>Connexion</h2>
     <form @submit.prevent="handleLogin">
-      <input v-model="username" placeholder="Username" required />
-      <input v-model="password" type="password" placeholder="Password" required />
+      <input v-model="username" placeholder="Nom d'utilisateur" />
+      <input v-model="password" type="password" placeholder="Mot de passe" />
       <button type="submit">Login</button>
     </form>
   </div>
@@ -20,20 +20,16 @@ const password = ref('')
 const router = useRouter()
 
 const handleLogin = async () => {
-  try {
-    const response = await axios.get(`http://localhost:3000/users?username=${username.value}`)
-    const user = response.data[0]
+  const { data } = await axios.get(`http://localhost:3000/users?username=${username.value}`)
+  const user = data[0]
 
-    if (user && bcrypt.compareSync(password.value, user.password)) {
-      // Store user info in localStorage for session persistence
-      localStorage.setItem('user', JSON.stringify(user))
-      alert(`Welcome back, ${user.username}!`)
-      router.push('/')
-    } else {
-      alert('Invalid username or password')
-    }
-  } catch (error) {
-    console.error('Login error', error)
+  if (user && bcrypt.compareSync(password.value, user.password)) {
+    localStorage.setItem('user', JSON.stringify(user))
+    // Trigger event for HeaderVue to update
+    window.dispatchEvent(new Event('login-success'))
+    router.push('/')
+  } else {
+    alert('Identifiants incorrects')
   }
 }
 </script>

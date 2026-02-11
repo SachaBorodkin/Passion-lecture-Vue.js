@@ -9,6 +9,26 @@
       "rateNumber": 0,
       "commentnumber": 0,
       "isAdmin": true
+    },
+    {
+      "id": "631c",
+      "username": "user",
+      "password": "$2b$10$AR7KUJmSouy4Tf5c73knWu4CCrR7VX363MM/TUTe4glyelc17GR6O",
+      "entryDate": "2026-02-11",
+      "bookNumber": "0",
+      "rateNumber": 0,
+      "commentnumber": 0,
+      "isAdmin": false
+    },
+    {
+      "id": "7e55",
+      "username": "Olek",
+      "password": "$2b$10$eMxWGiWfC0HkqdfBdHKB1..vaLKSu1YJlw6U/kwACTJZM8BhZwt56",
+      "entryDate": "2026-02-11",
+      "bookNumber": "0",
+      "rateNumber": 0,
+      "commentnumber": 0,
+      "isAdmin": false
     }
   ],
   "books": []

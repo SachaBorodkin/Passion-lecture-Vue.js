@@ -1,16 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import Login from '../views/LoginVue.vue'
-import SignUp from '../views/SignUpVue.vue'
+import Login from '../views/LoginVue.vue' // Your existing login
+import SignUp from '../views/SignUp.vue' // The new component
 
 const routes = [
-  { path: '/', component: HomeView },
-  { path: '/login', component: Login },
-  { path: '/signup', component: SignUp },
+  { path: '/', name: 'home', component: HomeView },
+  { path: '/login', name: 'login', component: Login },
+  { path: '/register', name: 'register', component: SignUp },
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 })
 
