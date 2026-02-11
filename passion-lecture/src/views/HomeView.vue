@@ -3,7 +3,7 @@
 <template>
   <div class="home">
     <h1><strong>Bienvenue sur ce site des ouvrages</strong></h1>
-    <h1>Les 5 dernières parutions</h1>
+    <h1>Les 5 dernières ouvrages</h1>
 
     <div v-if="loading">Chargement...</div>
 
