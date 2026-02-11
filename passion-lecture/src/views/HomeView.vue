@@ -43,7 +43,7 @@ onMounted(() => {
 })
 
 const lastFiveBooks = computed(() => {
-  return [...books.value].sort((a, b) => b.publishYear - a.publishYear).slice(0, 5)
+  return [...books.value].sort((a, b) => b.added - a.added).slice(0, 5)
 })
 
 const fetchBooks = async () => {

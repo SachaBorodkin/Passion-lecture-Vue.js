@@ -6,6 +6,7 @@
         <router-link to="/">Accueil</router-link>
 
         <div v-if="user" class="profile">
+          <p v-show="user.isAdmin == true">Bonjour Admin</p>
           <button @click="logout">Déconnexion</button>
           <a href="/user"><img src="../../public/avatar.png" class="avatar" /></a>
         </div>
@@ -48,7 +49,8 @@ onMounted(() => {
 body {
   margin: 0;
 }
-.header a {
+.header a,
+.header p {
   text-decoration: none;
   color: white;
   font-family: 'Jaldi', sans-serif;

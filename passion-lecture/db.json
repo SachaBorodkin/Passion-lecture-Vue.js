@@ -29,6 +29,16 @@
       "rateNumber": 0,
       "commentnumber": 0,
       "isAdmin": false
+    },
+    {
+      "id": "acbf",
+      "username": "root",
+      "password": "$2b$10$iAbfgaqpTB6PoEbuKAsuwO5ZstLUt0c4sETEuiH./PwPaIS0iL40y",
+      "entryDate": "2026-02-11",
+      "bookNumber": "0",
+      "rateNumber": 0,
+      "commentnumber": 0,
+      "isAdmin": true
     }
   ],
   "books": [
@@ -44,6 +54,7 @@
       "publishYear": 1907,
       "userRating": 0,
       "comments": [],
+      "added": "2026-02-10",
       "coverImage": "https://covers.openlibrary.org/b/id/8231992-L.jpg"
     },
     {
@@ -58,6 +69,7 @@
       "publishYear": 1999,
       "userRating": 0,
       "comments": [],
+      "added": "2026-02-10",
       "coverImage": "https://covers.openlibrary.org/b/id/10526771-L.jpg"
     },
     {
@@ -72,6 +84,7 @@
       "publishYear": 1960,
       "userRating": 0,
       "comments": [],
+      "added": "2026-02-10",
       "coverImage": "https://covers.openlibrary.org/b/id/12832560-L.jpg"
     }
   ]

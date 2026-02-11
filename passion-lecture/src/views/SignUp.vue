@@ -37,7 +37,6 @@ const handleRegister = async () => {
   error.value = ''
 
   try {
-    // 1. Check if user already exists
     const checkUser = await axios.get(`http://localhost:3000/users?username=${username.value}`)
     if (checkUser.data.length > 0) {
       error.value = "Ce nom d'utilisateur est déjà pris."
@@ -45,26 +44,22 @@ const handleRegister = async () => {
       return
     }
 
-    // 2. Hash the password
     const salt = bcrypt.genSaltSync(10)
     const hashedPassword = bcrypt.hashSync(password.value, salt)
 
-    // 3. Prepare the user object using your required structure
     const newUser = {
       username: username.value,
       password: hashedPassword,
-      entryDate: new Date().toISOString().split('T')[0], // Format: YYYY-MM-DD
+      entryDate: new Date().toISOString().split('T')[0],
       bookNumber: '0',
       rateNumber: 0,
       commentnumber: 0,
       isAdmin: false,
     }
-
-    // 4. Save to db.json
     await axios.post('http://localhost:3000/users', newUser)
 
     alert('Compte créé avec succès !')
-    router.push('/login') // Redirect to login page
+    router.push('/login')
   } catch (err) {
     error.value = "Une erreur est survenue lors de l'inscription."
     console.error(err)
@@ -75,7 +70,9 @@ const handleRegister = async () => {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Jaldi:wght@400;700&display=swap');
 .signup-container {
+  font-family: 'Jaldi', sans-serif;
   max-width: 400px;
   margin: 50px auto;
   padding: 20px;
