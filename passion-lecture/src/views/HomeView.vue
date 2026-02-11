@@ -2,17 +2,7 @@
 
 <template>
   <div class="home">
-    <h1>Ma Passion Lecture</h1>
-
-    <div v-if="loading">Chargement du contenu...</div>
-
-    <div v-else class="content-grid">
-      <div v-for="book in books" :key="book.id" class="content-card">
-        <h3>{{ book.title }}</h3>
-        <p><strong>Auteur:</strong> {{ book.author }}</p>
-        <p>{{ book.description }}</p>
-      </div>
-    </div>
+    <h1><strong>Bienvenue sur ce site des ouvrages</strong></h1>
   </div>
 </template>
 
@@ -40,6 +30,11 @@ onMounted(() => {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Jaldi:wght@400;700&display=swap');
+.home {
+  font-family: 'Jaldi', sans-serif;
+  justify-content: center;
+}
 .content-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));

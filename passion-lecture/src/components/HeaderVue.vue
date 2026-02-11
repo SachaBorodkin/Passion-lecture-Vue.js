@@ -4,16 +4,17 @@
     <div class="auth-area">
       <nav>
         <router-link to="/">Accueil</router-link>
+
+        <div v-if="user" class="profile">
+          <button @click="logout">Déconnexion</button>
+          <a href="/user"><img src="../../public/avatar.png" class="avatar" /></a>
+        </div>
+        <div v-else class="auth-links">
+          <router-link to="/login">Se connecter</router-link>
+          <span> | </span>
+          <router-link to="/register">S'inscrire</router-link>
+        </div>
       </nav>
-      <div v-if="user" class="profile">
-        <img src="../assets/avatar.png" class="avatar" />
-        <button @click="logout">Déconnexion</button>
-      </div>
-      <div v-else class="auth-links">
-        <router-link to="/login">Se connecter</router-link>
-        <span> | </span>
-        <router-link to="/register">S'inscrire</router-link>
-      </div>
     </div>
   </header>
 </template>
@@ -38,14 +39,20 @@ const logout = () => {
 
 onMounted(() => {
   updateStatus()
-  // Listen for the login event
   window.addEventListener('login-success', updateStatus)
 })
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Jaldi:wght@400;700&display=swap');
 body {
   margin: 0;
+}
+.header a {
+  text-decoration: none;
+  color: white;
+  font-family: 'Jaldi', sans-serif;
+  font-size: 32px;
 }
 .header {
   display: flex;
@@ -53,8 +60,13 @@ body {
   padding: 1rem;
   background: #0f172a;
 }
+nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
 .avatar {
-  width: 30px;
+  width: 80px;
   border-radius: 50%;
   margin-right: 5px;
 }
