@@ -45,7 +45,8 @@
       "userRating": 0,
       "comments": [],
       "added": "2026-02-10",
-      "coverImage": "https://covers.openlibrary.org/b/id/8231992-L.jpg"
+      "coverImage": "https://covers.openlibrary.org/b/id/8231992-L.jpg",
+      "fkUserId": "7e55"
     },
     {
       "id": 2,
@@ -60,7 +61,8 @@
       "userRating": 0,
       "comments": [],
       "added": "2026-02-10",
-      "coverImage": "https://covers.openlibrary.org/b/id/10526771-L.jpg"
+      "coverImage": "https://covers.openlibrary.org/b/id/10526771-L.jpg",
+      "fkUserId": "7e55"
     },
     {
       "id": 3,
@@ -75,7 +77,8 @@
       "userRating": 0,
       "comments": [],
       "added": "2026-02-10",
-      "coverImage": "https://covers.openlibrary.org/b/id/12832560-L.jpg"
+      "coverImage": "https://covers.openlibrary.org/b/id/12832560-L.jpg",
+      "fkUserId": "7e55"
     }
   ],
   "categories": ["Roman", "Manga", "Bande dessinée"]

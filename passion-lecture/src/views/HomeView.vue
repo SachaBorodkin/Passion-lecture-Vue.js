@@ -14,6 +14,7 @@
           <h3>{{ book.title }}</h3>
           <p><strong>Année :</strong> {{ book.publishYear }}</p>
           <p><strong>Catégorie :</strong> {{ book.category }}</p>
+          <p><strong>Ajouté par: :</strong> {{ addedBy(book) }}</p>
         </div>
       </div>
     </div>
@@ -41,7 +42,6 @@ const fetchContent = async () => {
 onMounted(() => {
   fetchContent()
 })
-
 const lastFiveBooks = computed(() => {
   return [...books.value].sort((a, b) => b.added - a.added).slice(0, 5)
 })
@@ -56,7 +56,6 @@ const fetchBooks = async () => {
     loading.value = false
   }
 }
-
 onMounted(fetchBooks)
 </script>
 
@@ -94,5 +93,9 @@ onMounted(fetchBooks)
 .book-card img {
   height: 231px;
   align-items: center;
+}
+nav a.router-link-exact-active {
+  color: #148867;
+  font-weight: bold;
 }
 </style>
