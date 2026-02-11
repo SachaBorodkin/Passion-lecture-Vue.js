@@ -3,11 +3,25 @@
 <template>
   <div class="home">
     <h1><strong>Bienvenue sur ce site des ouvrages</strong></h1>
+    <h1>Les 5 dernières parutions</h1>
+
+    <div v-if="loading">Chargement...</div>
+
+    <div v-else class="book-list">
+      <div v-for="book in lastFiveBooks" :key="book.id" class="book-card">
+        <img :src="book.coverImage || 'default-cover.jpg'" alt="Couverture" />
+        <div class="book-info">
+          <h3>{{ book.title }}</h3>
+          <p><strong>Année :</strong> {{ book.publishYear }}</p>
+          <p><strong>Catégorie :</strong> {{ book.category }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 
 const books = ref([])
@@ -27,6 +41,23 @@ const fetchContent = async () => {
 onMounted(() => {
   fetchContent()
 })
+
+const lastFiveBooks = computed(() => {
+  return [...books.value].sort((a, b) => b.publishYear - a.publishYear).slice(0, 5)
+})
+
+const fetchBooks = async () => {
+  try {
+    const response = await axios.get('http://localhost:3000/books')
+    books.value = response.data
+  } catch (error) {
+    console.error('Erreur API', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(fetchBooks)
 </script>
 
 <style scoped>
@@ -50,5 +81,18 @@ onMounted(() => {
   padding: 15px;
   border-radius: 8px;
   background: #fff;
+}
+.book-list {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+.book-card {
+  font-size: 20px;
+  text-align: center;
+}
+.book-card img {
+  height: 231px;
+  align-items: center;
 }
 </style>
