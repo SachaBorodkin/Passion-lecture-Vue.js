@@ -35,11 +35,7 @@ const team = [
 ]
 </script>
 <style>
-/* ASTUCE : Ce bloc n'est pas "scoped". 
-  Il force ton application à prendre toute la hauteur de l'écran 
-  pour que le "margin-top: auto" du footer fonctionne, 
-  sans que tu aies à ouvrir App.vue.
-*/
+
 #app {
   display: flex !important;
   flex-direction: column !important;
@@ -47,14 +43,12 @@ const team = [
 }
 </style>
 <style scoped>
-/* Import des polices pour correspondre au header */
 @import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Jaldi:wght@400;700&display=swap');
 
 .main-footer {
-  /* C'est cette ligne qui fait tout le travail : */
   margin-top: auto; 
   
-  background-color: #0f172a; /* Même couleur que ton header */
+  background-color: #0f172a; 
   color: white;
   padding: 30px 50px;
   width: 100%;
@@ -70,7 +64,6 @@ const team = [
   margin: 0 auto;
 }
 
-/* Style du Logo */
 .logo {
   font-family: 'Jaldi', sans-serif;
   font-size: 36px;
@@ -78,7 +71,7 @@ const team = [
 }
 .logo-only { color: white; }
 .logo-books { 
-  color: #1c4d3f; /* Le vert foncé de ton image */
+  color: #1c4d3f; 
   font-family: serif; 
   margin-left: 5px;
 }
@@ -90,7 +83,6 @@ const team = [
   margin-top: 5px;
 }
 
-/* Section Equipe */
 .footer-right {
   display: flex;
   flex-direction: column;
@@ -135,7 +127,6 @@ const team = [
   color: #1c4d3f;
 }
 
-/* Ajustement pour mobile */
 @media (max-width: 768px) {
   .footer-container {
     flex-direction: column;
