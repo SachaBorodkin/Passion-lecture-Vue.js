@@ -2,16 +2,15 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 const currentUserId = ref(null)
-const currentUser = ref(null)
 const route = useRoute()
 const hoverRating = ref(0)
 const id = Number(route.params.id)
 const book = ref(null)
-const loading = ref(true)
-const newComment = ref('')
+const loading = ref(true) // Add this
 
 onMounted(async () => {
   try {
+    // Ensure the ID is passed clearly
     const response = await fetch(`http://localhost:3000/books/${id}`)
 
     if (response.ok) {
@@ -28,39 +27,11 @@ onMounted(async () => {
   }
   const userData = localStorage.getItem('user')
   if (userData) {
-    currentUser.value = JSON.parse(userData)
-    currentUserId.value = currentUser.value.id
+    const user = JSON.parse(userData)
+    currentUserId.value = user.id // Access the ID from the stored object
   }
 })
-async function submitComment() {
-  if (!newComment.value.trim() || !currentUserId.value) return
 
-  const commentObj = {
-    id: Date.now(), // Unique ID for the comment
-    userId: currentUserId.value,
-    username: currentUser.value.username,
-    text: newComment.value,
-    date: new Date().toLocaleDateString('fr-FR'),
-  }
-
-  // Create a new comments array
-  const updatedComments = book.value.comments ? [...book.value.comments, commentObj] : [commentObj]
-
-  try {
-    const response = await fetch(`http://localhost:3000/books/${book.value.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ comments: updatedComments }),
-    })
-
-    if (response.ok) {
-      book.value.comments = updatedComments
-      newComment.value = '' // Reset the input
-    }
-  } catch (err) {
-    console.error('Failed to post comment:', err)
-  }
-}
 // Calculate average safely
 const averageRating = computed(() => {
   // If book hasn't loaded yet, or no one has rated, return 0
@@ -139,34 +110,6 @@ async function rateBook(star) {
         </div>
         <p>({{ book.ratingCount || 0 }} avis)</p>
       </div>
-      <hr />
-
-      <div class="comments-section">
-        <h3>Commentaires ({{ book.comments?.length || 0 }})</h3>
-
-        <div v-if="currentUserId" class="comment-form">
-          <textarea
-            v-model="newComment"
-            placeholder="Partagez votre avis sur ce livre..."
-            rows="3"
-          ></textarea>
-          <button @click="submitComment" :disabled="!newComment.trim()">
-            Publier le commentaire
-          </button>
-        </div>
-        <p v-else><em>Connectez-vous pour laisser un commentaire.</em></p>
-
-        <div class="comments-list">
-          <div v-for="comment in book.comments" :key="comment.id" class="comment-item">
-            <div class="comment-header">
-              <strong>{{ comment.username }}</strong>
-              <span class="comment-date">{{ comment.date }}</span>
-            </div>
-            <p>{{ comment.text }}</p>
-          </div>
-          <p v-if="!book.comments?.length">Aucun commentaire pour le moment.</p>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -184,59 +127,6 @@ async function rateBook(star) {
   cursor: pointer;
   font-size: 1.5rem;
 }
-.comments-section {
-  margin-top: 30px;
-  font-family: 'Jaldi', sans-serif;
-  text-align: left;
-}
-
-.comment-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 30px;
-}
-
-textarea {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  resize: vertical;
-}
-
-button {
-  align-self: flex-end;
-  padding: 8px 16px;
-  background-color: #ffca08;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.comment-item {
-  background: #f9f9f9;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-}
-
-.comment-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 5px;
-  font-size: 0.9rem;
-}
-
-.comment-date {
-  color: #888;
-}
 .star.active {
   color: #ffca08;
 }
@@ -244,15 +134,15 @@ button:disabled {
   font-size: 2rem;
   font-weight: bold;
 }
-.rating-box {
-  display: flex;
-  flex-direction: row;
-  gap: 15px;
-  font-family: 'Jaldi', sans-serif;
-}
 img {
   max-width: 150px;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.back-btn {
+  display: inline-block;
+  margin-top: 20px;
+  text-decoration: none;
+  color: #42b983;
 }
 </style>

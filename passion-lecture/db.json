@@ -29,16 +29,6 @@
       "rateNumber": 0,
       "commentnumber": 0,
       "isAdmin": true
-    },
-    {
-      "id": "330b",
-      "username": "kiril",
-      "password": "$2b$10$YpT61hTv1YipSd941USmduXw0PDpeDRSyV25F.mL3w8g2kh7/T9kq",
-      "entryDate": "2026-02-24",
-      "bookNumber": "0",
-      "rateNumber": 0,
-      "commentnumber": 0,
-      "isAdmin": false
     }
   ],
   "books": [
@@ -53,35 +43,16 @@
       "editor": "Éditions du Livre",
       "publishYear": 1907,
       "userRating": 0,
-      "comments": [
-        {
-          "id": 1771943968705,
-          "userId": "330b",
-          "username": "kiril",
-          "text": "I Absolutely loved the rickroll ",
-          "date": "24/02/2026"
-        },
-        {
-          "id": 1771944003993,
-          "userId": "acbf",
-          "username": "root",
-          "text": "test",
-          "date": "24/02/2026"
-        }
-      ],
+      "comments": [],
       "added": "2026-02-10",
       "coverImage": "https://covers.openlibrary.org/b/id/8231992-L.jpg",
       "fkUserId": "7e55",
-      "totalPoints": 9,
-      "ratingCount": 2,
+      "totalPoints": 4,
+      "ratingCount": 1,
       "userNotes": [
         {
           "userId": "acbf",
           "note": 4
-        },
-        {
-          "userId": "330b",
-          "note": 5
         }
       ]
     },
