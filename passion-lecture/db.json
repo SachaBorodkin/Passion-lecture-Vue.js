@@ -43,7 +43,22 @@
       "editor": "Éditions du Livre",
       "publishYear": 1907,
       "userRating": 0,
-      "comments": [],
+      "comments": [
+        {
+          "id": 1771943968705,
+          "userId": "330b",
+          "username": "kiril",
+          "text": "I Absolutely loved the rickroll ",
+          "date": "24/02/2026"
+        },
+        {
+          "id": 1771944003993,
+          "userId": "acbf",
+          "username": "root",
+          "text": "test",
+          "date": "24/02/2026"
+        }
+      ],
       "added": "2026-02-10",
       "coverImage": "https://covers.openlibrary.org/b/id/8231992-L.jpg",
       "fkUserId": "7e55",
