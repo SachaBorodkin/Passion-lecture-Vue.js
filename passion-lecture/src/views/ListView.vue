@@ -15,12 +15,14 @@
       <div v-if="loading">Chargement...</div>
       <div v-else class="book-list">
         <div v-for="book in filteredBooks" :key="book.id" class="book-card">
-          <img :src="book.coverImage || 'default-cover.jpg'" alt="Couverture" />
-          <div class="book-info">
-            <h3>{{ book.title }}</h3>
-            <p><strong>Année :</strong> {{ book.publishYear }}</p>
-            <p><strong>Catégorie :</strong> {{ book.category }}</p>
-          </div>
+          <router-link :to="{ name: 'BookDetails', params: { id: book.id } }">
+            <img :src="book.coverImage || 'default-cover.jpg'" alt="Couverture" />
+            <div class="book-info">
+              <h3>{{ book.title }}</h3>
+              <p><strong>Année :</strong> {{ book.publishYear }}</p>
+              <p><strong>Catégorie :</strong> {{ book.category }}</p>
+            </div>
+          </router-link>
         </div>
       </div>
     </div>
@@ -74,6 +76,10 @@ const filteredBooks = computed(() => {
   font-family: 'Jaldi', sans-serif;
   padding: 10px;
 }
+.home a {
+  text-decoration: none;
+  color: black;
+}
 .book-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -105,11 +111,15 @@ const filteredBooks = computed(() => {
 }
 .book-info h3 {
   margin: 0 0 8px 0;
+  text-decoration: none;
+  color: black;
 }
 
 .book-info p {
   margin: 4px 0;
   font-size: 0.9rem;
   color: #666;
+  text-decoration: none;
+  color: black;
 }
 </style>
