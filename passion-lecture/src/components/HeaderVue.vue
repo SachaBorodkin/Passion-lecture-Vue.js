@@ -3,6 +3,7 @@
     <img src="../assets/logo.svg" class="logo" />
     <div class="auth-area">
       <nav>
+        <router-link to="/list">Ouvrages</router-link>
         <router-link to="/AddBook">Ajouter un livre</router-link>
         <router-link to="/">Accueil</router-link>
 
