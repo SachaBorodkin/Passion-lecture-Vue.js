@@ -3,6 +3,7 @@
     <img src="../assets/logo.svg" class="logo" />
     <div class="auth-area">
       <nav>
+        <router-link to="/addBook">Ajouter</router-link>
         <router-link to="/">Accueil</router-link>
 
         <div v-if="user" class="profile">
