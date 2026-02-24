@@ -4,6 +4,7 @@ import Login from '../views/LoginVue.vue'
 import SignUp from '../views/SignUp.vue'
 import BookPageView from '../views/BookPageView.vue'
 import ListView from '@/views/ListView.vue'
+import AddView from '../views/AddBook.vue'
 
 const routes = [
   { path: '/', name: 'home', component: HomeView },
@@ -16,6 +17,7 @@ const routes = [
     props: true,
   },
   { path: '/list', name: 'list', component: ListView },
+  { path: '/addBook', name: 'addBook', component: AddView },
 ]
 
 const router = createRouter({
