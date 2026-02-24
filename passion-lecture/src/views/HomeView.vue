@@ -89,6 +89,7 @@ onMounted(fetchBooks)
 .book-card {
   font-size: 20px;
   text-align: center;
+  max-width: 200px;
 }
 .book-card img {
   height: 231px;
