@@ -81,5 +81,9 @@
       "fkUserId": "7e55"
     }
   ],
-  "categories": ["Roman", "Manga", "Bande dessinée"]
+  "categories": [
+    { "id": "1", "name": "Roman" },
+    { "id": "2", "name": "Manga" },
+    { "id": "3", "name": "Bande dessinée" }
+  ]
 }
