@@ -14,7 +14,7 @@
           <h3>{{ book.title }}</h3>
           <p><strong>Année :</strong> {{ book.publishYear }}</p>
           <p><strong>Catégorie :</strong> {{ book.category }}</p>
-          <p><strong>Ajouté par: :</strong> {{ addedBy(book) }}</p>
+          <!--  <p><strong>Ajouté par: :</strong> {{ addedBy(book) }}</p>-->
         </div>
       </div>
     </div>
