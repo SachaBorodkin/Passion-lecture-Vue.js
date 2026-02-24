@@ -29,6 +29,16 @@
       "rateNumber": 0,
       "commentnumber": 0,
       "isAdmin": true
+    },
+    {
+      "id": "82bd",
+      "username": "kiril",
+      "password": "$2b$10$s6A4iNQGjZzP0hRESBwY4ugmMUcEW46k0Aggm2z.dLMY4QvvLcIN.",
+      "entryDate": "2026-02-24",
+      "bookNumber": "0",
+      "rateNumber": 0,
+      "commentnumber": 0,
+      "isAdmin": false
     }
   ],
   "books": [
