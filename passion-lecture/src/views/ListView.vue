@@ -57,6 +57,7 @@ const lastFiveBooks = computed(() => {
   display: flex;
   flex-direction: column;
   transition: transform 0.2s ease;
+  min-height: 470px;
 }
 
 .book-card img {
