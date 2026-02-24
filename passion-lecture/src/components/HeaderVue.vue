@@ -1,11 +1,10 @@
 <template>
   <header class="header">
-    <img src="../assets/logo.svg" class="logo" />
+    <router-link to="/"><img src="../assets/logo.svg" class="logo" /></router-link>
     <div class="auth-area">
       <nav>
         <router-link to="/list">Ouvrages</router-link>
         <router-link to="/addbook">Ajouter un livre</router-link>
-        <router-link to="/">Accueil</router-link>
 
         <div v-if="user" class="profile">
           <p v-show="user.isAdmin == true">Bonjour Admin</p>
