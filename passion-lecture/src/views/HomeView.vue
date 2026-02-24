@@ -9,13 +9,14 @@
 
     <div v-else class="book-list">
       <div v-for="book in lastFiveBooks" :key="book.id" class="book-card">
-        <img :src="book.coverImage || 'default-cover.jpg'" alt="Couverture" />
-        <div class="book-info">
-          <h3>{{ book.title }}</h3>
-          <p><strong>Année :</strong> {{ book.publishYear }}</p>
-          <p><strong>Catégorie :</strong> {{ book.category }}</p>
-          <!--  <p><strong>Ajouté par: :</strong> {{ addedBy(book) }}</p>-->
-        </div>
+        <router-link :to="{ name: 'BookDetails', params: { id: book.id } }">
+          <img :src="book.coverImage || 'default-cover.jpg'" alt="Couverture" />
+          <div class="book-info">
+            <h3>{{ book.title }}</h3>
+            <p><strong>Année :</strong> {{ book.publishYear }}</p>
+            <p><strong>Catégorie :</strong> {{ book.category }}</p>
+          </div>
+        </router-link>
       </div>
     </div>
   </div>
@@ -67,7 +68,9 @@ onMounted(fetchBooks)
   font-size: 33px;
   text-align: center;
 }
-.home h1 {
+.home a {
+  text-decoration: none;
+  color: black;
 }
 .content-grid {
   display: grid;

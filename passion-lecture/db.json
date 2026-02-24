@@ -33,7 +33,7 @@
   ],
   "books": [
     {
-      "id": 1,
+      "id": "1",
       "title": "Le Mystère de la Chambre Jaune",
       "category": "Roman",
       "pageCount": 240,
@@ -46,10 +46,18 @@
       "comments": [],
       "added": "2026-02-10",
       "coverImage": "https://covers.openlibrary.org/b/id/8231992-L.jpg",
-      "fkUserId": "7e55"
+      "fkUserId": "7e55",
+      "totalPoints": 4,
+      "ratingCount": 1,
+      "userNotes": [
+        {
+          "userId": "acbf",
+          "note": 4
+        }
+      ]
     },
     {
-      "id": 2,
+      "id": "2",
       "title": "Naruto - Tome 1",
       "category": "Manga",
       "pageCount": 192,
@@ -62,10 +70,13 @@
       "comments": [],
       "added": "2026-02-10",
       "coverImage": "https://covers.openlibrary.org/b/id/10526771-L.jpg",
-      "fkUserId": "7e55"
+      "fkUserId": "7e55",
+      "totalPoints": 0,
+      "ratingCount": 0,
+      "userNotes": []
     },
     {
-      "id": 3,
+      "id": "3",
       "title": "Tintin au Tibet",
       "category": "Bande dessinée",
       "pageCount": 62,
@@ -78,12 +89,24 @@
       "comments": [],
       "added": "2026-02-10",
       "coverImage": "https://covers.openlibrary.org/b/id/12832560-L.jpg",
-      "fkUserId": "7e55"
+      "fkUserId": "7e55",
+      "totalPoints": 0,
+      "ratingCount": 0,
+      "userNotes": []
     }
   ],
   "categories": [
-    { "id": "1", "name": "Roman" },
-    { "id": "2", "name": "Manga" },
-    { "id": "3", "name": "Bande dessinée" }
+    {
+      "id": "1",
+      "name": "Roman"
+    },
+    {
+      "id": "2",
+      "name": "Manga"
+    },
+    {
+      "id": "3",
+      "name": "Bande dessinée"
+    }
   ]
 }
