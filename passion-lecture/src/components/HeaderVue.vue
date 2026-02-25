@@ -8,7 +8,6 @@
 
         <div v-if="user" class="profile">
           <p>Bonjour {{ user.username }}</p>
-          <button @click="logout">Déconnexion</button>
           <router-link :to="{ name: 'User', params: { id: user.id } }"
             ><img src="../../public/avatar.png" class="avatar"
           /></router-link>
@@ -49,39 +48,102 @@ onMounted(() => {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Jaldi:wght@400;700&display=swap');
+
 body {
   margin: 0;
 }
-.header a,
-.header p {
-  text-decoration: none;
-  color: white;
-  font-family: 'Jaldi', sans-serif;
-  font-size: 32px;
-}
+
 .header {
   display: flex;
   justify-content: space-between;
-  padding: 20px;
-  background: #0f172a;
   align-items: center;
+  padding: 8px 28px;
+  background: #0d1526;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  height: 56px;
+  box-sizing: border-box;
 }
+
+.logo {
+  display: flex;
+  height: 36px;
+}
+
 nav {
   display: flex;
   align-items: center;
   gap: 20px;
 }
-.avatar {
-  width: 80px;
-  border-radius: 50%;
-  margin-right: 5px;
+
+.header a {
+  text-decoration: none;
+  font-family: 'Jaldi', sans-serif;
+  font-size: 17px;
+  color: #e2e8f0;
+  transition: color 0.2s ease;
 }
+
+.header a:hover {
+  color: #ffffff;
+}
+
+.header a.router-link-active {
+  color: #3ecf8e;
+}
+
+.header p {
+  font-family: 'Jaldi', sans-serif;
+  font-size: 15px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #334155;
+  display: block;
+  transition: border-color 0.2s;
+}
+
+.avatar:hover {
+  border-color: #3ecf8e;
+}
+
 .profile {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
-.logo {
-  height: 63px;
+
+.profile button {
+  background: none;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  color: #94a3b8;
+  font-family: 'Jaldi', sans-serif;
+  font-size: 14px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.profile button:hover {
+  border-color: #e53e3e;
+  color: #fc8181;
+}
+
+.auth-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.auth-links span {
+  color: #475569;
+  font-family: 'Jaldi', sans-serif;
+  font-size: 16px;
 }
 </style>
