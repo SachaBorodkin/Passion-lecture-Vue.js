@@ -5,6 +5,7 @@ import SignUp from '../views/SignUp.vue'
 import BookPageView from '../views/BookPageView.vue'
 import ListView from '@/views/ListView.vue'
 import AddView from '../views/AddBook.vue'
+import UserView from '@/views/UserView.vue'
 
 const routes = [
   { path: '/', name: 'home', component: HomeView },
@@ -18,6 +19,7 @@ const routes = [
   },
   { path: '/list', name: 'list', component: ListView },
   { path: '/addBook', name: 'addBook', component: AddView },
+  { path: '/user/:id', name: 'User', component: UserView, props: true },
 ]
 
 const router = createRouter({
