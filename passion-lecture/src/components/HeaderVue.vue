@@ -34,11 +34,6 @@ const updateStatus = () => {
   user.value = data ? JSON.parse(data) : null
 }
 
-const logout = () => {
-  localStorage.removeItem('user')
-  updateStatus()
-  router.push('/login')
-}
 
 onMounted(() => {
   updateStatus()
@@ -116,23 +111,6 @@ nav {
   display: flex;
   align-items: center;
   gap: 12px;
-}
-
-.profile button {
-  background: none;
-  border: 1px solid #334155;
-  border-radius: 6px;
-  color: #94a3b8;
-  font-family: 'Jaldi', sans-serif;
-  font-size: 14px;
-  padding: 4px 10px;
-  cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
-}
-
-.profile button:hover {
-  border-color: #e53e3e;
-  color: #fc8181;
 }
 
 .auth-links {

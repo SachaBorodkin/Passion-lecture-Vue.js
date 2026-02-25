@@ -147,73 +147,121 @@ export default {
 }
 </script>
 
+
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Jaldi:wght@400;700&display=swap');
+
 .add-book {
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 860px;
+  width: 600px;
+  margin: 60px auto;
+  padding: 56px 60px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.09);
+  font-family: 'Jaldi', sans-serif;
 }
 
 .add-book h1 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 44px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #0d1526;
+  letter-spacing: 0.01em;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 28px;
 }
 
 label {
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #333;
+  margin-bottom: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  color: #374151;
+  letter-spacing: 0.01em;
 }
 
 input,
 textarea {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box; /* S'assure que le padding ne dépasse pas les 100% */
-  font-family: inherit;
+  padding: 13px 16px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-family: 'Jaldi', sans-serif;
+  font-size: 15px;
+  color: #0d1526;
+  background: #f8fafc;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  outline: none;
+}
+
+
+input:focus,
+textarea:focus {
+  border-color: #3ecf8e;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(62, 207, 142, 0.15);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #b0bec5;
 }
 
 textarea {
-  resize: vertical; /* Permet d'agrandir la zone de texte uniquement en hauteur */
+  resize: vertical;
+  min-height: 120px;
 }
 
 .form-actions {
   display: flex;
   justify-content: flex-start;
-  margin-top: 20px;
+  gap: 14px;
+  margin-top: 40px;
 }
 
 button {
-  margin-right: 10px;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+  padding: 12px 28px;
   border: none;
-  border-radius: 4px;
-  font-size: 16px;
+  border-radius: 8px;
+  font-family: 'Jaldi', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
 }
 
-button:hover {
-  background-color: #0056b3;
+button[type='submit'] {
+  background-color: #3ecf8e;
+  color: #0d1526;
+  box-shadow: 0 2px 8px rgba(62, 207, 142, 0.3);
+}
+
+button[type='submit']:hover {
+  background-color: #2db87a;
+  box-shadow: 0 4px 14px rgba(62, 207, 142, 0.4);
+  transform: translateY(-1px);
+}
+
+button[type='submit']:active {
+  transform: translateY(0);
 }
 
 .btn-cancel {
-  background-color: #6c757d;
+  background-color: transparent;
+  color: #64748b;
+  border: 1.5px solid #e2e8f0 !important;
+  box-shadow: none !important;
 }
 
 .btn-cancel:hover {
-  background-color: #5a6268;
+  background-color: #f1f5f9;
+  border-color: #cbd5e1 !important;
+  color: #374151;
+  transform: translateY(-1px);
 }
 </style>
