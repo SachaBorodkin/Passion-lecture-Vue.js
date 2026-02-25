@@ -7,7 +7,7 @@
         <router-link to="/addbook">Ajouter un livre</router-link>
 
         <div v-if="user" class="profile">
-          <p v-show="user.isAdmin == true">Bonjour Admin</p>
+          <p>Bonjour {{ user.username }}</p>
           <button @click="logout">Déconnexion</button>
           <router-link :to="{ name: 'User', params: { id: user.id } }"
             ><img src="../../public/avatar.png" class="avatar"
