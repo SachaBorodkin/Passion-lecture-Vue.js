@@ -8,9 +8,18 @@
         placeholder="Rechercher par titre..."
         class="search-input"
       />
+      <h3>Filtrer par catégorie :</h3>
       <select v-model="selectedCategory" class="category-select">
         <option value="">Toutes les catégories</option>
         <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
+      </select>
+      <h3>Trier par :</h3>
+      <select v-model="sortOption" class="category-select">
+        <option value="added">Date d'ajout</option>
+        <option value="title">Titre (A-Z)</option>
+        <option value="titleDesc">Titre (Z-A)</option>
+        <option value="year">Année (croissant)</option>
+        <option value="yearDesc">Année (décroissant)</option>
       </select>
     </div>
     <div v-if="loading">Chargement...</div>
@@ -39,6 +48,7 @@ const loading = ref(true)
 
 const searchQuery = ref('')
 const selectedCategory = ref('')
+const sortOption = ref('added')
 
 const categories = computed(() => {
   const allCats = books.value.map((b) => b.category)
@@ -68,8 +78,24 @@ const filteredBooks = computed(() => {
         selectedCategory.value === '' || book.category === selectedCategory.value
       return matchesSearch && matchesCategory
     })
-    .sort((a, b) => a.added - b.added)
+    .sort((a, b) => {
+      switch (sortOption.value) {
+        case 'title':
+          return a.title.localeCompare(b.title)
+        case 'titleDesc':
+          return b.title.localeCompare(a.title)
+        case 'year':
+          return a.publishYear - b.publishYear
+        case 'yearDesc':
+          return b.publishYear - a.publishYear
+        case 'added':
+        default:
+          return a.added - b.added
+      }
+    })
 })
+
+const sortedBooks = computed(() => [...filteredBooks.value].sort((a, b) => a.added - b.added))
 </script>
 
 <style scoped>
@@ -79,7 +105,10 @@ h1 {
   font-family: 'Jaldi', sans-serif;
 }
 .filters {
+  display: flex;
+  align-items: center;
   margin-left: 20px;
+  height: 35px;
 }
 .filters input {
   padding: 8px;
@@ -87,6 +116,9 @@ h1 {
   margin-right: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+.filters h3 {
+  font-size: 1rem;
 }
 .filters select {
   padding: 8px;
