@@ -22,9 +22,30 @@ const routes = [
   { path: '/user/:id', name: 'User', component: UserView, props: true },
 ]
 
+// 1. Define the router FIRST
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
+})
+
+// 2. NOW you can use router.beforeEach
+router.beforeEach((to, from, next) => {
+  if (to.name === 'EditBook') {
+    const currentUser = JSON.parse(localStorage.getItem('user'))
+
+    // Note: 'fetchBookFromSomeSource' is pseudo-code.
+    // You will need to implement actual data fetching here or
+    // handle the check within the component itself.
+    const bookToEdit = fetchBookFromSomeSource(to.params.id)
+
+    if (currentUser && (currentUser.role === 'admin' || currentUser.id === bookToEdit.userId)) {
+      next()
+    } else {
+      next({ name: 'home' }) // Ensure the name matches your route (case-sensitive)
+    }
+  } else {
+    next()
+  }
 })
 
 export default router

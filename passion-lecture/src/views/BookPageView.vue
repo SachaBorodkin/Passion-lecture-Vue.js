@@ -9,7 +9,15 @@ const id = String(route.params.id)
 const book = ref(null)
 const loading = ref(true)
 const newComment = ref('')
+const canModify = computed(() => {
+  if (!currentUser.value || !book.value) return false
 
+  // Check for isAdmin property instead of role
+  const isAdmin = currentUser.value.isAdmin === true
+  const isOwner = currentUser.value.id === book.value.userId
+
+  return isAdmin || isOwner
+})
 onMounted(async () => {
   try {
     const response = await fetch(`http://localhost:3000/books/${id}`)
@@ -29,6 +37,7 @@ onMounted(async () => {
   const userData = localStorage.getItem('user')
   if (userData) {
     currentUser.value = JSON.parse(userData)
+    // This will now contain "isAdmin: true" based on your shared JSON
     currentUserId.value = currentUser.value.id
   }
 })
@@ -79,7 +88,25 @@ const averageRating = computed(() => {
   }
   return (book.value.totalPoints / book.value.ratingCount).toFixed(1)
 })
+function editBook(bookId) {
+  // Redirect to your edit route
+  router.push(`/edit-book/${bookId}`)
+}
 
+async function deleteBook(bookId) {
+  if (confirm('Voulez-vous vraiment supprimer ce livre ?')) {
+    try {
+      const response = await fetch(`http://localhost:3000/books/${bookId}`, {
+        method: 'DELETE',
+      })
+      if (response.ok) {
+        router.push('/list') // Redirect to list after deletion
+      }
+    } catch (err) {
+      console.error('Erreur lors de la suppression:', err)
+    }
+  }
+}
 async function rateBook(star) {
   if (!book.value || !currentUserId.value) return
 
@@ -139,11 +166,17 @@ async function rateBook(star) {
         </div>
 
         <div class="info-section">
-          <h1>{{ book.title }}</h1>
-          <p class="year"><strong>Année :</strong> {{ book.publishYear }}</p>
-          <p class="category"><strong>Catégorie(s) :</strong> {{ book.category }}</p>
-          <p class="description">{{ book.description }}</p>
-          <p class="author"><strong>Auteur(ice) :</strong>{{ book.author }}</p>
+          <div class="left">
+            <h1>{{ book.title }}</h1>
+            <p class="year"><strong>Année :</strong> {{ book.publishYear }}</p>
+            <p class="category"><strong>Catégorie(s) :</strong> {{ book.category }}</p>
+            <p class="description">{{ book.description }}</p>
+            <p class="author"><strong>Auteur(ice) :</strong>{{ book.author }}</p>
+          </div>
+          <div v-if="canModify" class="actions">
+            <button @click="editBook(book.id)">Modifier</button>
+            <button @click="deleteBook(book.id)" class="delete-btn">Supprimer</button>
+          </div>
         </div>
       </div>
 
@@ -240,7 +273,7 @@ textarea {
 button {
   align-self: flex-end;
   padding: 8px 16px;
-  background-color: #ffca08;
+  background-color: #148867;
   border: none;
   border-radius: 5px;
   font-weight: bold;
@@ -286,5 +319,8 @@ img {
   max-width: 150px;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.info-section {
+  justify-content: space-between;
 }
 </style>
