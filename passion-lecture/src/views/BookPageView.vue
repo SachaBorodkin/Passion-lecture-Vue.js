@@ -1,9 +1,10 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 const currentUserId = ref(null)
 const currentUser = ref(null)
 const route = useRoute()
+const router = useRouter()
 const hoverRating = ref(0)
 const id = String(route.params.id)
 const book = ref(null)

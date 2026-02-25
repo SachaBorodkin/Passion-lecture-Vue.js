@@ -17,6 +17,11 @@ const routes = [
     component: BookPageView,
     props: true,
   },
+  {
+    path: '/edit-book/:id',
+    name: 'edit-book',
+    component: () => import('../views/EditBookView.vue'),
+  },
   { path: '/list', name: 'list', component: ListView },
   { path: '/addBook', name: 'addBook', component: AddView },
   { path: '/user/:id', name: 'User', component: UserView, props: true },
