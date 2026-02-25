@@ -29,26 +29,14 @@ import axios from 'axios'
 const books = ref([])
 const loading = ref(true)
 
-const fetchContent = async () => {
-  try {
-    const response = await axios.get('http://localhost:3000/books')
-    books.value = response.data
-  } catch (error) {
-    console.error('Erreur lors du chargement du contenu', error)
-  } finally {
-    loading.value = false
-  }
-}
-
-onMounted(() => {
-  fetchContent()
-})
 const lastFiveBooks = computed(() => {
+  //copie la liste des livres, prends les plus récents et prends 5 livres les plus récents
   return [...books.value].sort((a, b) => b.added - a.added).slice(0, 5)
 })
 
 const fetchBooks = async () => {
   try {
+    //envoie de la requete dans db et sauvegarde de la réponse
     const response = await axios.get('http://localhost:3000/books')
     books.value = response.data
   } catch (error) {
