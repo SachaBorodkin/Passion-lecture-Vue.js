@@ -9,7 +9,9 @@
         <div v-if="user" class="profile">
           <p v-show="user.isAdmin == true">Bonjour Admin</p>
           <button @click="logout">Déconnexion</button>
-          <a href="/user"><img src="../../public/avatar.png" class="avatar" /></a>
+          <router-link :to="{ name: 'User', params: { id: user.id } }"
+            ><img src="../../public/avatar.png" class="avatar"
+          /></router-link>
         </div>
         <div v-else class="auth-links">
           <router-link to="/login">Se connecter</router-link>
