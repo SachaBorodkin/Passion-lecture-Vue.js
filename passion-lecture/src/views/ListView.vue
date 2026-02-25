@@ -81,11 +81,11 @@ const filteredBooks = computed(() => {
     .sort((a, b) => {
       switch (sortOption.value) {
         case 'title':
-          return a.title.localeCompare(b.title)
+          return a.title.localeCompare(b.title) // compare les titres des livres deux par deux
         case 'titleDesc':
           return b.title.localeCompare(a.title)
         case 'year':
-          return a.publishYear - b.publishYear
+          return a.publishYear - b.publishYear // fait un calcul et si retourne un nombre négatif -> a avant b
         case 'yearDesc':
           return b.publishYear - a.publishYear
         case 'added':
@@ -94,8 +94,6 @@ const filteredBooks = computed(() => {
       }
     })
 })
-
-const sortedBooks = computed(() => [...filteredBooks.value].sort((a, b) => a.added - b.added))
 </script>
 
 <style scoped>
