@@ -200,6 +200,11 @@ async function rateBook(star) {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Jaldi:wght@400;700&display=swap');
+.container {
+  width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
 .book-details {
   font-family: 'Jaldi', sans-serif;
   display: flex;
