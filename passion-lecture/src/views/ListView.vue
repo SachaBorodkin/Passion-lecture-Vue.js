@@ -18,9 +18,10 @@
       <div class="trier-livres">
         <h3>Trier par :</h3>
         <select v-model="sortOption" class="category-select">
-          <option value="added">Date d'ajout</option>
-          <option value="title">Titre (A-Z)</option>
-          <option value="titleDesc">Titre (Z-A)</option>
+          <option value="addedDesc">Ajoutés récemment</option>
+          <option value="added">Plus anciens d'abord</option>
+          <option value="title">Titre (A - Z)</option>
+          <option value="titleDesc">Titre (Z - A)</option>
           <option value="year">Année (croissant)</option>
           <option value="yearDesc">Année (décroissant)</option>
         </select>
@@ -52,7 +53,7 @@ const loading = ref(true)
 
 const searchQuery = ref('')
 const selectedCategory = ref('')
-const sortOption = ref('added')
+const sortOption = ref('addedDesc')
 
 const categories = computed(() => {
   const allCats = books.value.map((b) => b.category)
@@ -93,8 +94,10 @@ const filteredBooks = computed(() => {
         case 'yearDesc':
           return b.publishYear - a.publishYear
         case 'added':
-        default:
           return a.added - b.added
+        case 'addedDesc':
+        default:
+          return new Date(b.added) - new Date(a.added)
       }
     })
 })
