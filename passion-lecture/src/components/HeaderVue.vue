@@ -59,7 +59,6 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 28px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   height: 56px;
   box-sizing: border-box;
