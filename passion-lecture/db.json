@@ -26,8 +26,8 @@
       "password": "$2b$10$iAbfgaqpTB6PoEbuKAsuwO5ZstLUt0c4sETEuiH./PwPaIS0iL40y",
       "entryDate": "2026-02-11",
       "bookNumber": "0",
-      "rateNumber": 1,
-      "commentnumber": 0,
+      "rateNumber": 2,
+      "commentnumber": 1,
       "isAdmin": true
     },
     {
@@ -372,13 +372,26 @@
       "editor": "Lippincott's",
       "publishYear": 1890,
       "userRating": 0,
-      "comments": [],
+      "comments": [
+        {
+          "id": 1772008507678,
+          "userId": "acbf",
+          "username": "root",
+          "text": "67",
+          "date": "25/02/2026"
+        }
+      ],
       "added": "2026-02-25",
       "coverImage": "https://covers.openlibrary.org/b/id/12642555-L.jpg",
       "fkUserId": "7e55",
-      "totalPoints": 0,
-      "ratingCount": 0,
-      "userNotes": []
+      "totalPoints": 5,
+      "ratingCount": 1,
+      "userNotes": [
+        {
+          "userId": "acbf",
+          "note": 5
+        }
+      ]
     },
     {
       "id": "18",
@@ -1006,6 +1019,19 @@
       "totalPoints": 0,
       "ratingCount": 0,
       "userNotes": []
+    },
+    {
+      "id": "e4cf",
+      "title": "Jeffrey Epstein's Coloring book",
+      "author": "Jeffrey Epstein",
+      "category": "Educatif",
+      "publishYear": 2026,
+      "pageCount": 67,
+      "summary": "Le livre pour les enfants avec les dessins à colorer",
+      "coverImage": "https://news.etml.net/assets/z.png",
+      "userRating": 0,
+      "comments": [],
+      "added": "2026-02-25"
     }
   ],
   "categories": [

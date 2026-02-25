@@ -298,7 +298,11 @@ button:disabled {
   margin-bottom: 5px;
   font-size: 0.9rem;
 }
-
+.actions {
+  gap: 20px;
+  display: flex;
+  align-items: center;
+}
 .comment-date {
   color: #888;
 }
