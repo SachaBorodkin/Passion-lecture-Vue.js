@@ -1,129 +1,140 @@
 <template>
-  <div class="add-book">
-    <h1>Ajouter un livre</h1>
-    <form @submit.prevent="addBook">
-      <div class="form-group">
-        <label for="title">Titre :</label>
-        <input id="title" v-model="newBook.title" type="text" required />
-      </div>
+  <div class="container">
+    <div v-if="loading">Chargement...</div>
 
-      <div class="form-group">
-        <label for="author">Auteur :</label>
-        <input id="author" v-model="newBook.author" type="text" required />
-      </div>
+    <form v-else-if="book" @submit.prevent="saveChanges" class="edit-form">
+      <h2>Modifier le livre</h2>
 
-      <div class="form-group">
-        <label for="category">Catégorie :</label>
-        <input
-          id="category"
-          list="category-options"
-          v-model="newBook.category"
-          type="text"
-          required
-          autocomplete="off"
-        />
+      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
 
-        <datalist id="category-options">
-          <option v-for="cat in availableCategories" :key="cat" :value="cat"></option>
-        </datalist>
-      </div>
+      <label
+        >Titre
+        <input v-model="book.title" required />
+      </label>
 
-      <div class="form-group">
-        <label for="publishYear">Année de publication :</label>
-        <input id="publishYear" v-model.number="newBook.publishYear" type="number" required />
-      </div>
+      <label
+        >Auteur(ice)
+        <input v-model="book.author" required />
+      </label>
 
-      <div class="form-group">
-        <label for="pageCount">Nombre de pages :</label>
-        <input id="pageCount" v-model.number="newBook.pageCount" type="number" required />
-      </div>
+      <label
+        >Année de publication
+        <input v-model="book.publishYear" type="number" />
+      </label>
 
-      <div class="form-group">
-        <label for="summary">Résumé :</label>
-        <textarea id="summary" v-model="newBook.summary" rows="4"></textarea>
-      </div>
+      <label
+        >Catégorie
+        <input v-model="book.category" />
+      </label>
 
-      <div class="form-group">
-        <label for="coverImage">Image de couverture (URL) :</label>
-        <input id="coverImage" v-model="newBook.coverImage" type="text" required />
-      </div>
+      <label
+        >Description
+        <textarea v-model="book.description" rows="5"></textarea>
+      </label>
 
-      <div class="form-actions">
-        <button type="submit">Ajouter le livre</button>
-        <button type="button" class="btn-cancel" @click="$router.back()">Annuler</button>
+      <label
+        >URL de couverture
+        <input v-model="book.coverImage" />
+      </label>
+
+      <div class="buttons">
+        <button type="submit">Sauvegarder</button>
+        <button type="button" @click="router.back()">Annuler</button>
       </div>
     </form>
   </div>
 </template>
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
-<script>
-export default {
-  name: 'AddView',
-  data() {
-    return {
-      newBook: this.getInitialBookState(),
-      availableCategories: [],
+const route = useRoute()
+const router = useRouter()
+const id = String(route.params.id)
+
+const book = ref(null)
+const loading = ref(true)
+const errorMessage = ref('')
+
+onMounted(async () => {
+  try {
+    const response = await fetch(`http://localhost:3000/books/${id}`) // cherche le livre dans le serveur par son id
+    if (response.ok) {
+      book.value = await response.json()
     }
-  },
-  mounted() {
-    this.fetchCategories()
-  },
-  methods: {
-    getInitialBookState() {
-      return {
-        title: '',
-        author: '',
-        category: '',
-        publishYear: null,
-        pageCount: null,
-        summary: '',
-        coverImage: '',
-      }
-    },
-    async fetchCategories() {
-      try {
-        const response = await fetch('http://localhost:3000/books')
-        if (response.ok) {
-          const books = await response.json()
-          const uniqueCategories = [...new Set(books.map((book) => book.category))].filter(Boolean)
-          this.availableCategories = uniqueCategories.sort()
-        } else {
-          console.error('Erreur lors du chargement des catégories')
-        }
-      } catch (error) {
-        console.error('Erreur réseau:', error)
-      }
-    },
-    async addBook() {
-      try {
-        const bookToSave = {
-          ...this.newBook,
-          userRating: 0,
-          comments: [],
-          added: new Date().toISOString().split('T')[0],
-        }
+  } catch (err) {
+    console.error('Erreur lors du chargement:', err)
+  } finally {
+    loading.value = false
+  }
+})
 
-        const response = await fetch('http://localhost:3000/books', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(bookToSave),
-        })
+async function saveChanges() {
+  try {
+    const response = await fetch(`http://localhost:3000/books/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: book.value.title,
+        author: book.value.author,
+        publishYear: book.value.publishYear,
+        category: book.value.category,
+        description: book.value.description,
+        coverImage: book.value.coverImage,
+      }),
+    })
 
-        if (response.ok) {
-          this.newBook = this.getInitialBookState()
-          alert('Livre ajouté avec succès!')
-          this.$router.push('/')
-        } else {
-          alert("Erreur lors de l'ajout du livre.")
-        }
-      } catch (error) {
-        console.error('Erreur:', error)
-      }
-    },
-  },
+    if (response.ok) {
+      router.push(`/book/${id}`)
+    } else {
+      errorMessage.value = 'Erreur lors de la sauvegarde.'
+    }
+  } catch (err) {
+    console.error('Erreur:', err)
+    errorMessage.value = 'Une erreur est survenue.'
+  }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.container {
+  width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Jaldi', sans-serif;
+}
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-weight: bold;
+}
+input,
+textarea {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+}
+.buttons {
+  display: flex;
+  gap: 10px;
+}
+button {
+  padding: 8px 16px;
+  background-color: #148867;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.error {
+  color: red;
+}
+</style>
