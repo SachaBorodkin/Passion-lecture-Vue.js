@@ -44,6 +44,7 @@
             <p><strong>Année :</strong> {{ book.publishYear }}</p>
             <p><strong>Catégorie :</strong> {{ book.category }}</p>
             <p><strong>Description :</strong> {{ book.summary }}</p>
+            <p class="added-book"><strong>Ajouté le :</strong> {{ book.added }}</p>
           </div>
         </router-link>
       </div>
@@ -206,6 +207,7 @@ button:hover {
   transition: transform 0.2s ease;
   min-height: 470px;
   width: 100%;
+  border-radius: 5px;
 }
 
 .book-card img {
@@ -233,8 +235,13 @@ button:hover {
   color: #464646;
   text-decoration: none;
 }
+.book-info p:nth-child(4) {
+  font-size: 0.85rem;
+  color: #8d8d8d;
+}
 .book-info p:last-child {
   margin-top: auto;
+  bottom: 0;
   font-size: 0.85rem;
   color: #8d8d8d;
 }
