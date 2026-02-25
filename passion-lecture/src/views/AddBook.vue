@@ -14,7 +14,11 @@
 
       <div class="form-group">
         <label for="category">Catégorie :</label>
-        <input id="category" v-model="newBook.category" type="text" required />
+        <input id="category" list="category-options" v-model="newBook.category" type="text" required autocomplete="off" />
+        
+        <datalist id="category-options">
+          <option v-for="cat in availableCategories" :key="cat" :value="cat"></option>
+        </datalist>
       </div>
 
       <div class="form-group">
@@ -55,12 +59,17 @@ export default {
     return {
       // On initialise l'objet newBook en appelant la méthode getInitialBookState
       newBook: this.getInitialBookState(),
+      // Tableau pour stocker les catégories disponibles, qui peut être utilisé pour suggérer des options à l'utilisateur
+      availableCategories: []
     }
+  },
+  mounted() {
+    // Appel de la méthode pour charger les catégories disponibles dès que le composant est monté
+    this.fetchCategories()
   },
   
   methods: {
-    // Permet de facilement réinitialiser le formulaire en retournant un objet "propre"
-    // C'est une excellente pratique pour éviter de dupliquer ce code lors du reset
+    // Permet de facilement réinitialiser le formulaire en retournant un objet 
     getInitialBookState() {
       return {
         title: '',
@@ -70,6 +79,27 @@ export default {
         pageCount: null,
         summary: '',
         coverImage: '',
+      }
+    },
+    async fetchCategories() {
+      try {
+        // Appel API pour récupérer les catégories disponibles
+        const response = await fetch('http://localhost:3000/books')
+        if (response.ok) {
+          const books = await response.json()
+          // 1. books.map(book => book.category) crée un tableau avec uniquement les catégories de chaque livre
+          // 2. new Set(...) supprime tous les doublons
+          // 3. [... ] retransforme le Set en un tableau classique
+          // 4. .filter(Boolean) retire les éventuelles catégories vides, null ou undefined
+          const uniqueCategories = [...new Set(books.map(book => book.category))].filter(Boolean);
+          
+          // On met à jour notre liste avec les catégories triées par ordre alphabétique
+          this.availableCategories = uniqueCategories.sort();
+        } else {
+          console.error('Erreur lors du chargement des catégories')
+        }
+      } catch (error) {
+        console.error('Erreur réseau:', error)
       }
     },
     
@@ -83,7 +113,7 @@ export default {
           // Ajout de champs par défaut qui ne sont pas gérés par le formulaire utilisateur
           userRating: 0,
           comments: [],
-          // Génère la date du jour au format YYYY-MM-DD (ex: 2026-02-25)
+          // Génère la date du jour au format YYYY-MM-DD
           added: new Date().toISOString().split('T')[0], 
         }
 
@@ -96,7 +126,7 @@ export default {
           body: JSON.stringify(bookToSave), // Convertit l'objet JavaScript en chaîne JSON
         })
 
-        // Vérifie si la requête a réussi (code HTTP entre 200 et 299)
+        // Vérifie si la requête a réussi
         if (response.ok) {
           // Réinitialiser le formulaire visuellement en écrasant l'état actuel avec un état vide
           this.newBook = this.getInitialBookState()
@@ -106,11 +136,10 @@ export default {
           // Redirection de l'utilisateur vers la page d'accueil après l'ajout réussi
           this.$router.push('/')
         } else {
-          // Gère le cas où le serveur a répondu, mais avec une erreur (ex: 404, 500)
+          // Gère le cas où le serveur a répondu, mais avec une erreur
           alert("Erreur lors de l'ajout du livre.")
         }
       } catch (error) {
-        // Gère les erreurs réseau ou si le serveur est injoignable
         console.error('Erreur:', error)
       }
     },
