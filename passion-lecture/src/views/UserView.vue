@@ -38,7 +38,7 @@ onMounted(async () => {
 
 function logout() {
   localStorage.removeItem('user')
-  router.push('/')
+  window.location.href = '/'
 }
 
 async function deleteAccount() {
@@ -52,7 +52,7 @@ async function deleteAccount() {
 
     if (response.ok) {
       localStorage.removeItem('user')
-      router.push('/')
+      window.location.href = '/'
       alert('Compte supprimé avec succès.')
     }
   } catch (err) {
