@@ -8,19 +8,23 @@
         placeholder="Rechercher par titre..."
         class="search-input"
       />
-      <h3>Filtrer par catégorie :</h3>
-      <select v-model="selectedCategory" class="category-select">
-        <option value="">Toutes les catégories</option>
-        <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
-      </select>
-      <h3>Trier par :</h3>
-      <select v-model="sortOption" class="category-select">
-        <option value="added">Date d'ajout</option>
-        <option value="title">Titre (A-Z)</option>
-        <option value="titleDesc">Titre (Z-A)</option>
-        <option value="year">Année (croissant)</option>
-        <option value="yearDesc">Année (décroissant)</option>
-      </select>
+      <div class="filtrer-livres">
+        <h3>Filtrer par catégorie :</h3>
+        <select v-model="selectedCategory" class="category-select">
+          <option value="">Toutes les catégories</option>
+          <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
+        </select>
+      </div>
+      <div class="trier-livres">
+        <h3>Trier par :</h3>
+        <select v-model="sortOption" class="category-select">
+          <option value="added">Date d'ajout</option>
+          <option value="title">Titre (A-Z)</option>
+          <option value="titleDesc">Titre (Z-A)</option>
+          <option value="year">Année (croissant)</option>
+          <option value="yearDesc">Année (décroissant)</option>
+        </select>
+      </div>
     </div>
     <div v-if="loading">Chargement...</div>
     <div v-else class="book-list">
@@ -105,7 +109,7 @@ h1 {
 .filters {
   display: flex;
   align-items: center;
-  margin-left: 20px;
+  margin: 0 20px 0 20px;
   height: 35px;
 }
 .filters input {
@@ -117,11 +121,21 @@ h1 {
 }
 .filters h3 {
   font-size: 1rem;
+  margin-right: 10px;
 }
 .filters select {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+.filtrer-livres {
+  display: flex;
+  align-items: center;
+}
+.trier-livres {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
 }
 .home {
   font-family: 'Jaldi', sans-serif;
