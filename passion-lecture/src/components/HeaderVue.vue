@@ -1,23 +1,25 @@
 <template>
-  <header class="header">
-    <router-link to="/"><img src="../assets/logo.svg" class="logo" /></router-link>
-    <div class="auth-area">
-      <nav>
-        <router-link to="/list">Ouvrages</router-link>
-        <router-link to="/addbook">Ajouter un livre</router-link>
+  <header>
+    <div class="header">
+      <router-link to="/"><img src="../assets/logo.svg" class="logo" /></router-link>
+      <div class="auth-area">
+        <nav>
+          <router-link to="/list">Ouvrages</router-link>
+          <router-link to="/addbook">Ajouter un livre</router-link>
 
-        <div v-if="user" class="profile">
-          <p>Bonjour {{ user.username }}</p>
-          <router-link :to="{ name: 'User', params: { id: user.id } }"
-            ><img src="../../public/avatar.png" class="avatar"
-          /></router-link>
-        </div>
-        <div v-else class="auth-links">
-          <router-link to="/login">Se connecter</router-link>
-          <span> | </span>
-          <router-link to="/register">S'inscrire</router-link>
-        </div>
-      </nav>
+          <div v-if="user" class="profile">
+            <p>Bonjour {{ user.username }}</p>
+            <router-link :to="{ name: 'User', params: { id: user.id } }"
+              ><img src="../../public/avatar.png" class="avatar"
+            /></router-link>
+          </div>
+          <div v-else class="auth-links">
+            <router-link to="/login">Se connecter</router-link>
+            <span> | </span>
+            <router-link to="/register">S'inscrire</router-link>
+          </div>
+        </nav>
+      </div>
     </div>
   </header>
 </template>
@@ -34,7 +36,6 @@ const updateStatus = () => {
   user.value = data ? JSON.parse(data) : null
 }
 
-
 onMounted(() => {
   updateStatus()
   window.addEventListener('login-success', updateStatus)
@@ -48,12 +49,17 @@ body {
   margin: 0;
 }
 
+header {
+  width: 100%;
+  background: #0d1526;
+}
 .header {
+  max-width: 1400px;
+  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 8px 28px;
-  background: #0d1526;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   height: 56px;
   box-sizing: border-box;
