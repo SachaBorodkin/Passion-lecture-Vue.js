@@ -4,7 +4,7 @@
   <div class="home">
     <h1><strong>Bienvenue sur ce site des ouvrages</strong></h1>
     <h1>Les 5 dernières ouvrages</h1>
-
+    <a href="/list"><button>Explorer les livres</button></a>
     <div v-if="loading">Chargement...</div>
 
     <div v-else class="book-list">
@@ -53,7 +53,7 @@ onMounted(fetchBooks)
 .home {
   font-family: 'Jaldi', sans-serif;
   justify-content: center;
-  font-size: 33px;
+  font-size: 23px;
   text-align: center;
 }
 .home a {
@@ -85,6 +85,14 @@ onMounted(fetchBooks)
 .book-card img {
   height: 231px;
   align-items: center;
+}
+button {
+  padding: 8px 16px;
+  background-color: #148867;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
 }
 nav a.router-link-exact-active {
   color: #148867;
