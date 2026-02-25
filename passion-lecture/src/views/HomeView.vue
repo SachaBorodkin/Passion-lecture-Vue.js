@@ -31,7 +31,7 @@ const loading = ref(true)
 
 const lastFiveBooks = computed(() => {
   //copie la liste des livres, prends les plus récents et prends 5 livres les plus récents
-  return [...books.value].sort((a, b) => b.added - a.added).slice(0, 5)
+  return [...books.value].sort((a, b) => new Date(b.added) - new Date(a.added)).slice(0, 5)
 })
 
 const fetchBooks = async () => {
