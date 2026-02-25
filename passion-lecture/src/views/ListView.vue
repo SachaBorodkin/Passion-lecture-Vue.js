@@ -37,6 +37,7 @@
     <div v-else class="book-list">
       <div v-for="book in filteredBooks" :key="book.id" class="book-card">
         <router-link :to="{ name: 'BookDetails', params: { id: book.id } }">
+          <!-- faire l'objet cliquable -->
           <img :src="book.coverImage || 'default-cover.jpg'" alt="Couverture" />
           <div class="book-info">
             <h3>{{ book.title }}</h3>
@@ -57,8 +58,8 @@ import axios from 'axios'
 const books = ref([])
 const loading = ref(true)
 
-const searchQuery = ref('')
-const activeSearch = ref('') // activeSearch est la valeur qui est appliquée pour filtrer les livres, searchQuery est la valeur qui est dans l'input de recherche
+const searchQuery = ref('') // valeur qui est dans l'input de recherche
+const activeSearch = ref('') // valeur qui est appliquée pour filtrer les livres
 
 const selectedCategory = ref('')
 const sortOption = ref('addedDesc')

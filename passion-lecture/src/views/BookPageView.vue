@@ -90,6 +90,7 @@ const averageRating = computed(() => {
 })
 function editBook(bookId) {
   // Redirect to your edit route
+
   router.push(`/edit-book/${bookId}`)
 }
 
