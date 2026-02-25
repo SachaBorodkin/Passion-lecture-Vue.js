@@ -47,14 +47,20 @@
 
 <script>
 export default {
+  // Nom du composant, utile pour le débogage dans Vue DevTools
   name: 'AddView',
+  
+  // La fonction data retourne l'état réactif initial du composant
   data() {
     return {
+      // On initialise l'objet newBook en appelant la méthode getInitialBookState
       newBook: this.getInitialBookState(),
     }
   },
+  
   methods: {
-    // Permet de facilement réinitialiser le formulaire
+    // Permet de facilement réinitialiser le formulaire en retournant un objet "propre"
+    // C'est une excellente pratique pour éviter de dupliquer ce code lors du reset
     getInitialBookState() {
       return {
         title: '',
@@ -66,34 +72,45 @@ export default {
         coverImage: '',
       }
     },
+    
+    // Méthode asynchrone appelée lors de la soumission du formulaire
     async addBook() {
       try {
-        // Création de l'objet final à envoyer à la DB avec les champs automatiques
+        // Création de l'objet final à envoyer à la base de données
         const bookToSave = {
+          // L'opérateur de décomposition (spread operator '...') copie toutes les propriétés de this.newBook
           ...this.newBook,
+          // Ajout de champs par défaut qui ne sont pas gérés par le formulaire utilisateur
           userRating: 0,
           comments: [],
-          added: new Date().toISOString().split('T')[0], // Génère la date du jour au format YYYY-MM-DD
+          // Génère la date du jour au format YYYY-MM-DD (ex: 2026-02-25)
+          added: new Date().toISOString().split('T')[0], 
         }
 
+        // Appel API via fetch() pour envoyer les données au serveur local
         const response = await fetch('http://localhost:3000/books', {
-          method: 'POST',
+          method: 'POST', // Indique qu'on veut créer une nouvelle ressource
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json', // Précise que le corps de la requête est en JSON
           },
-          body: JSON.stringify(bookToSave),
+          body: JSON.stringify(bookToSave), // Convertit l'objet JavaScript en chaîne JSON
         })
 
+        // Vérifie si la requête a réussi (code HTTP entre 200 et 299)
         if (response.ok) {
-          // Réinitialiser le formulaire
+          // Réinitialiser le formulaire visuellement en écrasant l'état actuel avec un état vide
           this.newBook = this.getInitialBookState()
+          
           alert('Livre ajouté avec succès!')
-          // Optionnel : rediriger l'utilisateur après l'ajout
+          
+          // Redirection de l'utilisateur vers la page d'accueil après l'ajout réussi
           this.$router.push('/')
         } else {
+          // Gère le cas où le serveur a répondu, mais avec une erreur (ex: 404, 500)
           alert("Erreur lors de l'ajout du livre.")
         }
       } catch (error) {
+        // Gère les erreurs réseau ou si le serveur est injoignable
         console.error('Erreur:', error)
       }
     },
