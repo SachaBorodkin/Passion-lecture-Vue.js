@@ -2,12 +2,18 @@
   <h1><strong>Liste de tous les ouvrages</strong></h1>
   <div class="home">
     <div class="filters">
-      <input
-        v-model="searchQuery"
-        type="text"
-        placeholder="Rechercher par titre..."
-        class="search-input"
-      />
+      <div class="recherche">
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Rechercher par titre..."
+          class="search-input"
+          @keyup.enter="applySearch"
+        />
+        <button type="button" @click="applySearch">
+          <img src="../assets/icons8-loupe.svg" class="loupe-recherche" />
+        </button>
+      </div>
       <div class="filtrer-livres">
         <h3>Filtrer par catégorie :</h3>
         <select v-model="selectedCategory" class="category-select">
@@ -52,6 +58,8 @@ const books = ref([])
 const loading = ref(true)
 
 const searchQuery = ref('')
+const activeSearch = ref('') // activeSearch est la valeur qui est appliquée pour filtrer les livres, searchQuery est la valeur qui est dans l'input de recherche
+
 const selectedCategory = ref('')
 const sortOption = ref('addedDesc')
 
@@ -78,7 +86,7 @@ onMounted(() => {
 const filteredBooks = computed(() => {
   return books.value
     .filter((book) => {
-      const matchesSearch = book.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+      const matchesSearch = book.title.toLowerCase().includes(activeSearch.value.toLowerCase())
       const matchesCategory =
         selectedCategory.value === '' || book.category === selectedCategory.value
       return matchesSearch && matchesCategory
@@ -101,6 +109,9 @@ const filteredBooks = computed(() => {
       }
     })
 })
+const applySearch = () => {
+  activeSearch.value = searchQuery.value
+}
 </script>
 
 <style scoped>
@@ -134,11 +145,39 @@ h1 {
 .filtrer-livres {
   display: flex;
   align-items: center;
+  margin-left: 15px;
 }
 .trier-livres {
   display: flex;
   align-items: center;
   margin-left: auto;
+}
+.recherche {
+  display: flex;
+  align-items: center;
+  background-color: #fdfdfd;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.recherche input {
+  border: none;
+  margin-right: 0;
+}
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 4px;
+  transition: background-color 0.3s ease;
+}
+button:hover {
+  background-color: #dbdbdb;
+}
+
+.loupe-recherche {
+  width: 24px;
+  height: 24px;
+  display: block;
 }
 .home {
   font-family: 'Jaldi', sans-serif;
