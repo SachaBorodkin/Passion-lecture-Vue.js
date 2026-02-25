@@ -36,34 +36,44 @@ async function submitComment() {
   if (!newComment.value.trim() || !currentUserId.value) return
 
   const commentObj = {
-    id: Date.now(), // Unique ID for the comment
+    id: Date.now(),
     userId: currentUserId.value,
     username: currentUser.value.username,
     text: newComment.value,
     date: new Date().toLocaleDateString('fr-FR'),
   }
 
-  // Create a new comments array
   const updatedComments = book.value.comments ? [...book.value.comments, commentObj] : [commentObj]
 
   try {
-    const response = await fetch(`http://localhost:3000/books/${book.value.id}`, {
+    const bookResponse = await fetch(`http://localhost:3000/books/${book.value.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ comments: updatedComments }),
     })
 
-    if (response.ok) {
+    if (bookResponse.ok) {
       book.value.comments = updatedComments
-      newComment.value = '' // Reset the input
+      newComment.value = ''
+
+      const newCommentCount = (currentUser.value.commentnumber || 0) + 1
+      const userResponse = await fetch(`http://localhost:3000/users/${currentUserId.value}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ commentnumber: newCommentCount }),
+      })
+
+      if (userResponse.ok) {
+        currentUser.value.commentnumber = newCommentCount
+        localStorage.setItem('user', JSON.stringify(currentUser.value))
+      }
     }
   } catch (err) {
     console.error('Failed to post comment:', err)
   }
 }
-// Calculate average safely
+
 const averageRating = computed(() => {
-  // If book hasn't loaded yet, or no one has rated, return 0
   if (!book.value || !book.value.ratingCount || book.value.ratingCount === 0) {
     return '0.0'
   }
@@ -73,30 +83,47 @@ const averageRating = computed(() => {
 async function rateBook(star) {
   if (!book.value || !currentUserId.value) return
 
-  // Vérifie si l'utilisateur a déjà noté
   const existing = book.value.userNotes?.find((n) => n.userId === currentUserId.value)
   if (existing) {
     alert('Vous avez déjà noté ce livre !')
     return
   }
 
-  // Ajoute la note de l'utilisateur
   const newNotes = book.value.userNotes ? [...book.value.userNotes] : []
   newNotes.push({ userId: currentUserId.value, note: star })
 
   const totalPoints = newNotes.reduce((acc, n) => acc + n.note, 0)
   const ratingCount = newNotes.length
 
-  const response = await fetch(`http://localhost:3000/books/${book.value.id}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ totalPoints, ratingCount, userNotes: newNotes }),
-  })
+  try {
+    // 1. Update the Book
+    const bookResponse = await fetch(`http://localhost:3000/books/${book.value.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ totalPoints, ratingCount, userNotes: newNotes }),
+    })
 
-  if (response.ok) {
-    book.value.userNotes = newNotes
-    book.value.totalPoints = totalPoints
-    book.value.ratingCount = ratingCount
+    if (bookResponse.ok) {
+      book.value.userNotes = newNotes
+      book.value.totalPoints = totalPoints
+      book.value.ratingCount = ratingCount
+
+      // 2. Update the User's rate count
+      const newRateCount = (currentUser.value.rateNumber || 0) + 1
+      const userResponse = await fetch(`http://localhost:3000/users/${currentUserId.value}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rateNumber: newRateCount }),
+      })
+
+      if (userResponse.ok) {
+        // Sync local state and storage
+        currentUser.value.rateNumber = newRateCount
+        localStorage.setItem('user', JSON.stringify(currentUser.value))
+      }
+    }
+  } catch (err) {
+    console.error('Failed to rate book:', err)
   }
 }
 </script>
