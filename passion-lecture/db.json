@@ -1033,19 +1033,5 @@
       "comments": [],
       "added": "2026-02-25"
     }
-  ],
-  "categories": [
-    {
-      "id": "1",
-      "name": "Roman"
-    },
-    {
-      "id": "2",
-      "name": "Manga"
-    },
-    {
-      "id": "3",
-      "name": "Bande dessinée"
-    }
   ]
 }
