@@ -3,8 +3,13 @@
 <template>
   <div class="home">
     <h1><strong>Bienvenue sur ce site des ouvrages</strong></h1>
+    <p class="site-description">
+      Passion Lecture est une plateforme collaborative dédiée aux passionnés de livres. <br />
+      Découvrez, partagez et commentez des ouvrages variés,<br />
+      ajoutez vos propres livres et échangez avec la communauté !
+    </p>
     <h1>Les 5 dernières ouvrages</h1>
-    <a href="/list"><button>Explorer les livres</button></a>
+    <a href="/list"><button class="explore-button">Explorer les livres</button></a>
     <div v-if="loading">Chargement...</div>
 
     <div v-else class="book-list">
@@ -93,6 +98,9 @@ button {
   border-radius: 5px;
   font-weight: bold;
   cursor: pointer;
+}
+.explore-button {
+  margin-bottom: 20px;
 }
 nav a.router-link-exact-active {
   color: #148867;
