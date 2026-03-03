@@ -1,47 +1,51 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+
 const currentUserId = ref(null)
 const currentUser = ref(null)
 const route = useRoute()
 const router = useRouter()
-const hoverRating = ref(0)
-const id = String(route.params.id)
+const hoverRating = ref(0) // Gère l'aperçu des étoiles au survol
+const id = String(route.params.id) // ID du livre récupéré depuis l'URL
 const book = ref(null)
 const loading = ref(true)
 const newComment = ref('')
+
 const canModify = computed(() => {
   if (!currentUser.value || !book.value) return false
 
-  // Check for isAdmin property instead of role
   const isAdmin = currentUser.value.isAdmin === true
   const isOwner = currentUser.value.id === book.value.userId
 
   return isAdmin || isOwner
 })
+
 onMounted(async () => {
   try {
+    // Récupération des données du livre depuis l'API locale
     const response = await fetch(`http://localhost:3000/books/${id}`)
 
     if (response.ok) {
       book.value = await response.json()
     } else {
-      // If we get a 404 or other error, set book to null
-      console.warn(`Server responded with: ${response.status}`)
+      console.warn(`Réponse serveur : ${response.status}`)
       book.value = null
     }
   } catch (err) {
-    console.error('Failed to fetch book:', err)
+    console.error('Erreur lors de la récupération du livre:', err)
   } finally {
     loading.value = false
   }
+
+  // Synchronisation de l'utilisateur avec le localStorage
   const userData = localStorage.getItem('user')
   if (userData) {
     currentUser.value = JSON.parse(userData)
-    // This will now contain "isAdmin: true" based on your shared JSON
     currentUserId.value = currentUser.value.id
   }
 })
+
 async function submitComment() {
   if (!newComment.value.trim() || !currentUserId.value) return
 
@@ -53,9 +57,11 @@ async function submitComment() {
     date: new Date().toLocaleDateString('fr-FR'),
   }
 
+  // Ajout du commentaire à la liste existante
   const updatedComments = book.value.comments ? [...book.value.comments, commentObj] : [commentObj]
 
   try {
+    //Mise à jour du livre (PATCH)
     const bookResponse = await fetch(`http://localhost:3000/books/${book.value.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -66,6 +72,7 @@ async function submitComment() {
       book.value.comments = updatedComments
       newComment.value = ''
 
+      //Incrémentation du compteur de commentaires de l'utilisateur
       const newCommentCount = (currentUser.value.commentnumber || 0) + 1
       const userResponse = await fetch(`http://localhost:3000/users/${currentUserId.value}`, {
         method: 'PATCH',
@@ -79,9 +86,11 @@ async function submitComment() {
       }
     }
   } catch (err) {
-    console.error('Failed to post comment:', err)
+    console.error('Erreur lors de la publication du commentaire:', err)
   }
 }
+
+//Calcule la note moyenne formatée à un chiffre après la virgule
 
 const averageRating = computed(() => {
   if (!book.value || !book.value.ratingCount || book.value.ratingCount === 0) {
@@ -89,9 +98,8 @@ const averageRating = computed(() => {
   }
   return (book.value.totalPoints / book.value.ratingCount).toFixed(1)
 })
-function editBook(bookId) {
-  // Redirect to your edit route
 
+function editBook(bookId) {
   router.push(`/edit-book/${bookId}`)
 }
 
@@ -102,16 +110,20 @@ async function deleteBook(bookId) {
         method: 'DELETE',
       })
       if (response.ok) {
-        router.push('/list') // Redirect to list after deletion
+        router.push('/list')
       }
     } catch (err) {
       console.error('Erreur lors de la suppression:', err)
     }
   }
 }
+
+//enregistre une note (étoiles) pour le livre
+
 async function rateBook(star) {
   if (!book.value || !currentUserId.value) return
 
+  //Empêcher l'utilisateur de voter plusieurs fois
   const existing = book.value.userNotes?.find((n) => n.userId === currentUserId.value)
   if (existing) {
     alert('Vous avez déjà noté ce livre !')
@@ -125,7 +137,7 @@ async function rateBook(star) {
   const ratingCount = newNotes.length
 
   try {
-    // 1. Update the Book
+    // Mise à jour des données du livre avec la nouvelle note
     const bookResponse = await fetch(`http://localhost:3000/books/${book.value.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -137,7 +149,7 @@ async function rateBook(star) {
       book.value.totalPoints = totalPoints
       book.value.ratingCount = ratingCount
 
-      // 2. Update the User's rate count
+      // Mise à jour du compteur de notes de l'utilisateur
       const newRateCount = (currentUser.value.rateNumber || 0) + 1
       const userResponse = await fetch(`http://localhost:3000/users/${currentUserId.value}`, {
         method: 'PATCH',
@@ -146,13 +158,12 @@ async function rateBook(star) {
       })
 
       if (userResponse.ok) {
-        // Sync local state and storage
         currentUser.value.rateNumber = newRateCount
         localStorage.setItem('user', JSON.stringify(currentUser.value))
       }
     }
   } catch (err) {
-    console.error('Failed to rate book:', err)
+    console.error('Erreur lors de la notation:', err)
   }
 }
 </script>
