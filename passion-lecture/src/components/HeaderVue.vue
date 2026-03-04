@@ -4,8 +4,8 @@
       <router-link to="/"><img src="../assets/logo.svg" class="logo" /></router-link>
       <div class="auth-area">
         <nav>
-          <router-link to="/list">Ouvrages</router-link>
-          <router-link to="/addbook">Ajouter un livre</router-link>
+          <router-link to="/books">Ouvrages</router-link>
+          <router-link to="/book">Ajouter un livre</router-link>
 
           <div v-if="user" class="profile">
             <p>Bonjour {{ user.username }}</p>
@@ -26,10 +26,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 
 const user = ref(null)
-const router = useRouter()
 
 const updateStatus = () => {
   const data = localStorage.getItem('user')

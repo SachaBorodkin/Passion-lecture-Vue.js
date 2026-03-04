@@ -18,22 +18,20 @@ const routes = [
     props: true,
   },
   {
-    path: '/edit-book/:id', // edit book route
+    path: '/edit-book/:id',
     name: 'edit-book',
     component: () => import('../views/EditBookView.vue'),
   },
-  { path: '/list', name: 'list', component: ListView },
-  { path: '/addBook', name: 'addBook', component: AddView },
+  { path: '/books', name: 'books', component: ListView },
+  { path: '/book', name: 'book', component: AddView },
   { path: '/user/:id', name: 'User', component: UserView, props: true },
 ]
 
-// 1. Define the router FIRST
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 })
 
-// 2. NOW you can use router.beforeEach
 router.beforeEach((to) => {
   if (to.name === 'edit-book') {
     const currentUser = JSON.parse(localStorage.getItem('user'))
