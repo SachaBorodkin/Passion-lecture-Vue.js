@@ -98,7 +98,13 @@ const averageRating = computed(() => {
   }
   return (book.value.totalPoints / book.value.ratingCount).toFixed(1)
 })
-
+const userNote = computed(() => {
+  if (!book.value || !book.value.userNotes || !currentUserId.value) {
+    return 0
+  }
+  const noteObj = book.value.userNotes.find((n) => n.userId === currentUserId.value)
+  return noteObj ? noteObj.note : 0
+})
 function editBook(bookId) {
   router.push(`/edit-book/${bookId}`)
 }

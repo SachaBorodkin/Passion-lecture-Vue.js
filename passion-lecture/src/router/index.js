@@ -34,23 +34,18 @@ const router = createRouter({
 })
 
 // 2. NOW you can use router.beforeEach
-router.beforeEach((to, from, next) => {
-  if (to.name === 'EditBook') {
+router.beforeEach((to) => {
+  if (to.name === 'edit-book') {
     const currentUser = JSON.parse(localStorage.getItem('user'))
 
-    // Note: 'fetchBookFromSomeSource' is pseudo-code.
-    // You will need to implement actual data fetching here or
-    // handle the check within the component itself.
-    const bookToEdit = fetchBookFromSomeSource(to.params.id)
-
-    if (currentUser && (currentUser.role === 'admin' || currentUser.id === bookToEdit.userId)) {
-      next()
-    } else {
-      next({ name: 'home' }) // Ensure the name matches your route (case-sensitive)
+    if (!currentUser) {
+      return { name: 'login' }
     }
-  } else {
-    next()
+
+    return true
   }
+
+  return true
 })
 
 export default router
