@@ -29,7 +29,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import axios from 'axios'
+import { getAllBooks } from '@/api/books'
 
 const books = ref([])
 const loading = ref(true)
@@ -42,7 +42,7 @@ const lastFiveBooks = computed(() => {
 const fetchBooks = async () => {
   try {
     //envoie de la requete dans db et sauvegarde de la réponse
-    const response = await axios.get('http://localhost:3000/books')
+    const response = await getAllBooks()
     books.value = response.data
   } catch (error) {
     console.error('Erreur API', error)

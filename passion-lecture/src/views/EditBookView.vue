@@ -7,18 +7,15 @@
 
       <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
 
-      <label
-        >Titre
+      <label>Titre
         <input v-model="book.title" required />
       </label>
 
-      <label
-        >Auteur(ice)
+      <label>Auteur(ice)
         <input v-model="book.author" required />
       </label>
 
-      <label
-        >Année de publication
+      <label>Année de publication
         <input v-model="book.publishYear" type="number" />
       </label>
 
@@ -30,18 +27,15 @@
         type="text"
         autocomplete="off"
       />
-
       <datalist id="category-options">
         <option v-for="cat in availableCategories" :key="cat" :value="cat"></option>
       </datalist>
 
-      <label
-        >Description
+      <label>Description
         <textarea v-model="book.description" rows="5"></textarea>
       </label>
 
-      <label
-        >URL de couverture
+      <label>URL de couverture
         <input v-model="book.coverImage" />
       </label>
 
@@ -52,9 +46,12 @@
     </form>
   </div>
 </template>
+
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { getBookById, getAllBooks, updateBook } from '@/api/books'
+
 const availableCategories = ref([])
 const route = useRoute()
 const router = useRouter()
@@ -66,17 +63,15 @@ const errorMessage = ref('')
 
 onMounted(async () => {
   try {
-    const response = await fetch(`http://localhost:3000/books/${id}`) // cherche le livre dans le serveur par son id
-    if (response.ok) {
-      book.value = await response.json()
-    }
-    const allBooksResponse = await fetch('http://localhost:3000/books')
-    if (allBooksResponse.ok) {
-      const allBooks = await allBooksResponse.json()
-      availableCategories.value = [...new Set(allBooks.map((b) => b.category))]
-        .filter(Boolean)
-        .sort()
-    }
+    // GET /books/:id — load the book to edit
+    const { data } = await getBookById(id)
+    book.value = data
+
+    // GET /books — fetch all books to populate category suggestions
+    const { data: allBooks } = await getAllBooks()
+    availableCategories.value = [...new Set(allBooks.map((b) => b.category))]
+      .filter(Boolean)
+      .sort()
   } catch (err) {
     console.error('Erreur lors du chargement:', err)
   } finally {
@@ -86,27 +81,19 @@ onMounted(async () => {
 
 async function saveChanges() {
   try {
-    const response = await fetch(`http://localhost:3000/books/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title: book.value.title,
-        author: book.value.author,
-        publishYear: book.value.publishYear,
-        category: book.value.category,
-        description: book.value.description,
-        coverImage: book.value.coverImage,
-      }),
+    // PATCH /books/:id — partial update with only edited fields
+    await updateBook(id, {
+      title: book.value.title,
+      author: book.value.author,
+      publishYear: book.value.publishYear,
+      category: book.value.category,
+      description: book.value.description,
+      coverImage: book.value.coverImage,
     })
-
-    if (response.ok) {
-      router.push(`/book/${id}`)
-    } else {
-      errorMessage.value = 'Erreur lors de la sauvegarde.'
-    }
+    router.push(`/book/${id}`)
   } catch (err) {
     console.error('Erreur:', err)
-    errorMessage.value = 'Une erreur est survenue.'
+    errorMessage.value = 'Une erreur est survenue lors de la sauvegarde.'
   }
 }
 </script>
@@ -118,28 +105,15 @@ async function saveChanges() {
   padding: 20px;
   font-family: 'Jaldi', sans-serif;
 }
-.edit-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-label {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  font-weight: bold;
-}
-input,
-textarea {
+.edit-form { display: flex; flex-direction: column; gap: 15px; }
+label { display: flex; flex-direction: column; gap: 5px; font-weight: bold; }
+input, textarea {
   padding: 8px;
   border-radius: 6px;
   border: 1px solid #ddd;
   font-size: 1rem;
 }
-.buttons {
-  display: flex;
-  gap: 10px;
-}
+.buttons { display: flex; gap: 10px; }
 button {
   padding: 8px 16px;
   background-color: #148867;
@@ -149,7 +123,5 @@ button {
   cursor: pointer;
   font-weight: bold;
 }
-.error {
-  color: red;
-}
+.error { color: red; }
 </style>

@@ -17,7 +17,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import axios from 'axios'
+import { getUserByUsername } from '@/api/users'
 import bcrypt from 'bcryptjs'
 import { useRouter } from 'vue-router'
 
@@ -26,7 +26,7 @@ const password = ref('')
 const router = useRouter()
 
 const handleLogin = async () => {
-  const { data } = await axios.get(`http://localhost:3000/users?username=${username.value}`)
+  const { data } = await getUserByUsername(username.value)
   const user = data[0]
 
   if (user && bcrypt.compareSync(password.value, user.password)) {

@@ -14,7 +14,6 @@
 
       <div class="form-group">
         <label for="category">Catégorie :</label>
-
         <input
           id="category"
           v-model="newBook.category"
@@ -24,7 +23,6 @@
           placeholder="Choisir ou taper une catégorie"
           autocomplete="off"
         />
-
         <datalist id="category-options">
           <option v-for="cat in availableCategories" :key="cat" :value="cat"></option>
         </datalist>
@@ -59,26 +57,24 @@
 </template>
 
 <script>
+import { getAllBooks, createBook } from '@/api/books'
+import { getUserById, updateUser } from '@/api/users'
+
 export default {
-  // Nom du composant, utile pour le débogage dans Vue DevTools
   name: 'AddView',
 
-  // La fonction data retourne l'état réactif initial du composant
   data() {
     return {
-      // On initialise l'objet newBook en appelant la méthode getInitialBookState
       newBook: this.getInitialBookState(),
-      // Tableau pour stocker les catégories disponibles, qui peut être utilisé pour suggérer des options à l'utilisateur
       availableCategories: [],
     }
   },
+
   mounted() {
-    // Appel de la méthode pour charger les catégories disponibles dès que le composant est monté
     this.fetchCategories()
   },
 
   methods: {
-    // Permet de facilement réinitialiser le formulaire en retournant un objet
     getInitialBookState() {
       return {
         title: '',
@@ -90,88 +86,54 @@ export default {
         coverImage: '',
       }
     },
+
     async fetchCategories() {
       try {
-        // Appel API pour récupérer les catégories disponibles
-        const response = await fetch('http://localhost:3000/books')
-        if (response.ok) {
-          const books = await response.json()
-          // 1. books.map(book => book.category) crée un tableau avec uniquement les catégories de chaque livre
-          // 2. new Set(...) supprime tous les doublons
-          // 3. [... ] retransforme le Set en un tableau classique
-          // 4. .filter(Boolean) retire les éventuelles catégories vides, null ou undefined
-          const uniqueCategories = [...new Set(books.map((book) => book.category))].filter(Boolean)
-
-          // On met à jour notre liste avec les catégories triées par ordre alphabétique
-          this.availableCategories = uniqueCategories.sort()
-        } else {
-          console.error('Erreur lors du chargement des catégories')
-        }
+        // GET /books — fetch all books to extract unique categories
+        const { data: books } = await getAllBooks()
+        const uniqueCategories = [...new Set(books.map((b) => b.category))].filter(Boolean)
+        this.availableCategories = uniqueCategories.sort()
       } catch (error) {
-        console.error('Erreur réseau:', error)
+        console.error('Erreur lors du chargement des catégories:', error)
       }
     },
 
-    // Méthode asynchrone appelée lors de la soumission du formulaire
     async addBook() {
       try {
-        // On essaie de récupérer l'ID via plusieurs noms de clés possibles
-        // Si vous avez stocké l'objet entier, on essaie aussi de le parser
         let userId = localStorage.getItem('userId') || localStorage.getItem('id')
-
-        // Si vous avez stocké l'utilisateur complet sous 'user', on extrait l'ID
         if (!userId && localStorage.getItem('user')) {
           const user = JSON.parse(localStorage.getItem('user'))
           userId = user.id
         }
 
         if (!userId) {
-          console.error('LocalStorage actuel :', localStorage) // Pour déboguer
-          alert(
-            "Erreur : Votre session a expiré ou l'ID utilisateur est introuvable. Reconnectez-vous.",
-          )
+          alert("Erreur : Votre session a expiré ou l'ID utilisateur est introuvable. Reconnectez-vous.")
           return
         }
 
-        // Préparation du livre
         const bookToSave = {
           ...this.newBook,
-          userId: userId,
+          userId,
           userRating: 0,
           comments: [],
           added: new Date().toISOString().split('T')[0],
         }
 
-        // 1. Sauvegarde du livre
-        const bookResponse = await fetch('http://localhost:3000/books', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(bookToSave),
-        })
+        // POST /books — create the new book
+        await createBook(bookToSave)
 
-        if (bookResponse.ok) {
-          // 2. Mise à jour du compteur bookNumber
-          const userRes = await fetch(`http://localhost:3000/users/${userId}`)
-          if (userRes.ok) {
-            const userData = await userRes.json()
+        // GET /users/:id — fetch current stats
+        const { data: userData } = await getUserById(userId)
+        const newNumber = (Number(userData.bookNumber) || 0) + 1
 
-            // Calcul sécurisé (force le type Number)
-            const currentNumber = Number(userData.bookNumber) || 0
-            const newNumber = currentNumber + 1
+        // PATCH /users/:id — increment bookNumber counter
+        await updateUser(userId, { bookNumber: newNumber })
 
-            await fetch(`http://localhost:3000/users/${userId}`, {
-              method: 'PATCH',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ bookNumber: newNumber }),
-            })
-          }
-
-          alert('Livre ajouté avec succès !')
-          this.newBook = this.getInitialBookState()
-          this.$router.push('/')
-        }
+        alert('Livre ajouté avec succès !')
+        this.newBook = this.getInitialBookState()
+        this.$router.push('/')
       } catch (error) {
-        console.error('Erreur:', error)
+        console.error("Erreur lors de l'ajout du livre:", error)
       }
     },
   },
@@ -191,7 +153,6 @@ export default {
   box-shadow: 0 4px 32px rgba(0, 0, 0, 0.09);
   font-family: 'Jaldi', sans-serif;
 }
-
 .add-book h1 {
   text-align: center;
   margin-bottom: 44px;
@@ -200,11 +161,7 @@ export default {
   color: #0d1526;
   letter-spacing: 0.01em;
 }
-
-.form-group {
-  margin-bottom: 28px;
-}
-
+.form-group { margin-bottom: 28px; }
 label {
   display: block;
   margin-bottom: 8px;
@@ -213,9 +170,7 @@ label {
   color: #374151;
   letter-spacing: 0.01em;
 }
-
-input,
-textarea {
+input, textarea {
   width: 100%;
   padding: 13px 16px;
   border: 1.5px solid #e2e8f0;
@@ -225,37 +180,22 @@ textarea {
   font-size: 15px;
   color: #0d1526;
   background: #f8fafc;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s,
-    background 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
   outline: none;
 }
-
-input:focus,
-textarea:focus {
+input:focus, textarea:focus {
   border-color: #3ecf8e;
   background: #ffffff;
   box-shadow: 0 0 0 3px rgba(62, 207, 142, 0.15);
 }
-
-input::placeholder,
-textarea::placeholder {
-  color: #b0bec5;
-}
-
-textarea {
-  resize: vertical;
-  min-height: 120px;
-}
-
+input::placeholder, textarea::placeholder { color: #b0bec5; }
+textarea { resize: vertical; min-height: 120px; }
 .form-actions {
   display: flex;
   justify-content: flex-start;
   gap: 14px;
   margin-top: 40px;
 }
-
 button {
   padding: 12px 28px;
   border: none;
@@ -264,35 +204,25 @@ button {
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition:
-    background-color 0.2s,
-    transform 0.1s,
-    box-shadow 0.2s;
+  transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
 }
-
 button[type='submit'] {
   background-color: #3ecf8e;
   color: #0d1526;
   box-shadow: 0 2px 8px rgba(62, 207, 142, 0.3);
 }
-
 button[type='submit']:hover {
   background-color: #2db87a;
   box-shadow: 0 4px 14px rgba(62, 207, 142, 0.4);
   transform: translateY(-1px);
 }
-
-button[type='submit']:active {
-  transform: translateY(0);
-}
-
+button[type='submit']:active { transform: translateY(0); }
 .btn-cancel {
   background-color: transparent;
   color: #64748b;
   border: 1.5px solid #e2e8f0 !important;
   box-shadow: none !important;
 }
-
 .btn-cancel:hover {
   background-color: #f1f5f9;
   border-color: #cbd5e1 !important;

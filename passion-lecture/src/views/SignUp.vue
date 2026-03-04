@@ -22,7 +22,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import axios from 'axios'
+import { getUserByUsername, createUser } from '@/api/users'
 import bcrypt from 'bcryptjs'
 import { useRouter } from 'vue-router'
 
@@ -37,7 +37,7 @@ const handleRegister = async () => {
   error.value = ''
 
   try {
-    const checkUser = await axios.get(`http://localhost:3000/users?username=${username.value}`)
+    const checkUser = await getUserByUsername(username.value)
     if (checkUser.data.length > 0) {
       error.value = "Ce nom d'utilisateur est déjà pris."
       loading.value = false
@@ -56,7 +56,7 @@ const handleRegister = async () => {
       commentnumber: 0,
       isAdmin: false,
     }
-    await axios.post('http://localhost:3000/users', newUser)
+    await createUser(newUser)
 
     alert('Compte créé avec succès !')
     router.push('/login')

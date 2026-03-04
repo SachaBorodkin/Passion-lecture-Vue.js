@@ -1,44 +1,38 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { getBookById, updateBook, deleteBook } from '@/api/books'
+import { updateUser } from '@/api/users'
 
 const currentUserId = ref(null)
 const currentUser = ref(null)
 const route = useRoute()
 const router = useRouter()
-const hoverRating = ref(0) // Gère l'aperçu des étoiles au survol
-const id = String(route.params.id) // ID du livre récupéré depuis l'URL
+const hoverRating = ref(0)
+const id = String(route.params.id)
 const book = ref(null)
 const loading = ref(true)
 const newComment = ref('')
 
 const canModify = computed(() => {
   if (!currentUser.value || !book.value) return false
-
   const isAdmin = currentUser.value.isAdmin === true
   const isOwner = currentUser.value.id === book.value.userId
-
   return isAdmin || isOwner
 })
 
 onMounted(async () => {
   try {
-    // Récupération des données du livre depuis l'API locale
-    const response = await fetch(`http://localhost:3000/books/${id}`)
-
-    if (response.ok) {
-      book.value = await response.json()
-    } else {
-      console.warn(`Réponse serveur : ${response.status}`)
-      book.value = null
-    }
+    // GET /books/:id — load book details
+    const { data } = await getBookById(id)
+    book.value = data
   } catch (err) {
     console.error('Erreur lors de la récupération du livre:', err)
+    book.value = null
   } finally {
     loading.value = false
   }
 
-  // Synchronisation de l'utilisateur avec le localStorage
   const userData = localStorage.getItem('user')
   if (userData) {
     currentUser.value = JSON.parse(userData)
@@ -57,79 +51,56 @@ async function submitComment() {
     date: new Date().toLocaleDateString('fr-FR'),
   }
 
-  // Ajout du commentaire à la liste existante
-  const updatedComments = book.value.comments ? [...book.value.comments, commentObj] : [commentObj]
+  const updatedComments = book.value.comments
+    ? [...book.value.comments, commentObj]
+    : [commentObj]
 
   try {
-    //Mise à jour du livre (PATCH)
-    const bookResponse = await fetch(`http://localhost:3000/books/${book.value.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ comments: updatedComments }),
-    })
+    // PATCH /books/:id — add the new comment to the book
+    await updateBook(book.value.id, { comments: updatedComments })
+    book.value.comments = updatedComments
+    newComment.value = ''
 
-    if (bookResponse.ok) {
-      book.value.comments = updatedComments
-      newComment.value = ''
-
-      //Incrémentation du compteur de commentaires de l'utilisateur
-      const newCommentCount = (currentUser.value.commentnumber || 0) + 1
-      const userResponse = await fetch(`http://localhost:3000/users/${currentUserId.value}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ commentnumber: newCommentCount }),
-      })
-
-      if (userResponse.ok) {
-        currentUser.value.commentnumber = newCommentCount
-        localStorage.setItem('user', JSON.stringify(currentUser.value))
-      }
-    }
+    // PATCH /users/:id — increment commentnumber counter
+    const newCommentCount = (currentUser.value.commentnumber || 0) + 1
+    await updateUser(currentUserId.value, { commentnumber: newCommentCount })
+    currentUser.value.commentnumber = newCommentCount
+    localStorage.setItem('user', JSON.stringify(currentUser.value))
   } catch (err) {
     console.error('Erreur lors de la publication du commentaire:', err)
   }
 }
 
-//Calcule la note moyenne formatée à un chiffre après la virgule
-
 const averageRating = computed(() => {
-  if (!book.value || !book.value.ratingCount || book.value.ratingCount === 0) {
-    return '0.0'
-  }
+  if (!book.value || !book.value.ratingCount || book.value.ratingCount === 0) return '0.0'
   return (book.value.totalPoints / book.value.ratingCount).toFixed(1)
 })
+
 const userNote = computed(() => {
-  if (!book.value || !book.value.userNotes || !currentUserId.value) {
-    return 0
-  }
+  if (!book.value || !book.value.userNotes || !currentUserId.value) return 0
   const noteObj = book.value.userNotes.find((n) => n.userId === currentUserId.value)
   return noteObj ? noteObj.note : 0
 })
+
 function editBook(bookId) {
   router.push(`/edit-book/${bookId}`)
 }
 
-async function deleteBook(bookId) {
+async function handleDeleteBook(bookId) {
   if (confirm('Voulez-vous vraiment supprimer ce livre ?')) {
     try {
-      const response = await fetch(`http://localhost:3000/books/${bookId}`, {
-        method: 'DELETE',
-      })
-      if (response.ok) {
-        router.push('/list')
-      }
+      // DELETE /books/:id
+      await deleteBook(bookId)
+      router.push('/list')
     } catch (err) {
       console.error('Erreur lors de la suppression:', err)
     }
   }
 }
 
-//enregistre une note (étoiles) pour le livre
-
 async function rateBook(star) {
   if (!book.value || !currentUserId.value) return
 
-  //Empêcher l'utilisateur de voter plusieurs fois
   const existing = book.value.userNotes?.find((n) => n.userId === currentUserId.value)
   if (existing) {
     alert('Vous avez déjà noté ce livre !')
@@ -143,31 +114,17 @@ async function rateBook(star) {
   const ratingCount = newNotes.length
 
   try {
-    // Mise à jour des données du livre avec la nouvelle note
-    const bookResponse = await fetch(`http://localhost:3000/books/${book.value.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ totalPoints, ratingCount, userNotes: newNotes }),
-    })
+    // PATCH /books/:id — save the new rating
+    await updateBook(book.value.id, { totalPoints, ratingCount, userNotes: newNotes })
+    book.value.userNotes = newNotes
+    book.value.totalPoints = totalPoints
+    book.value.ratingCount = ratingCount
 
-    if (bookResponse.ok) {
-      book.value.userNotes = newNotes
-      book.value.totalPoints = totalPoints
-      book.value.ratingCount = ratingCount
-
-      // Mise à jour du compteur de notes de l'utilisateur
-      const newRateCount = (currentUser.value.rateNumber || 0) + 1
-      const userResponse = await fetch(`http://localhost:3000/users/${currentUserId.value}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rateNumber: newRateCount }),
-      })
-
-      if (userResponse.ok) {
-        currentUser.value.rateNumber = newRateCount
-        localStorage.setItem('user', JSON.stringify(currentUser.value))
-      }
-    }
+    // PATCH /users/:id — increment rateNumber counter
+    const newRateCount = (currentUser.value.rateNumber || 0) + 1
+    await updateUser(currentUserId.value, { rateNumber: newRateCount })
+    currentUser.value.rateNumber = newRateCount
+    localStorage.setItem('user', JSON.stringify(currentUser.value))
   } catch (err) {
     console.error('Erreur lors de la notation:', err)
   }
@@ -192,13 +149,13 @@ async function rateBook(star) {
             <p class="description">{{ book.description }}</p>
             <p class="author"><strong>Auteur(ice) :</strong>{{ book.author }}</p>
             <p class="extrait">
-              <strong>Extrait : </strong
-              ><a :href="book.excerpt" download="extrait_livre.pdf"> Télécharger l'extrait </a>
+              <strong>Extrait : </strong>
+              <a :href="book.excerpt" download="extrait_livre.pdf"> Télécharger l'extrait </a>
             </p>
           </div>
           <div v-if="canModify" class="actions">
             <button @click="editBook(book.id)">Modifier</button>
-            <button @click="deleteBook(book.id)" class="delete-btn">Supprimer</button>
+            <button @click="handleDeleteBook(book.id)" class="delete-btn">Supprimer</button>
           </div>
         </div>
       </div>
@@ -256,43 +213,12 @@ async function rateBook(star) {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Jaldi:wght@400;700&display=swap');
-.container {
-  width: 1400px;
-  margin: 0 auto;
-  padding: 20px;
-}
-.book-details {
-  font-family: 'Jaldi', sans-serif;
-  display: flex;
-  gap: 40px;
-  margin-top: 20px;
-}
-.star {
-  color: #ccc;
-  cursor: pointer;
-  font-size: 1.5rem;
-}
-.comments-section {
-  margin-top: 30px;
-  font-family: 'Jaldi', sans-serif;
-  text-align: left;
-}
-
-.comment-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 30px;
-}
-
-textarea {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  resize: vertical;
-}
-
+.container { width: 1400px; margin: 0 auto; padding: 20px; }
+.book-details { font-family: 'Jaldi', sans-serif; display: flex; gap: 40px; margin-top: 20px; }
+.star { color: #ccc; cursor: pointer; font-size: 1.5rem; }
+.comments-section { margin-top: 30px; font-family: 'Jaldi', sans-serif; text-align: left; }
+.comment-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
+textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; resize: vertical; }
 button {
   align-self: flex-end;
   padding: 8px 16px;
@@ -302,52 +228,14 @@ button {
   font-weight: bold;
   cursor: pointer;
 }
-
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.comment-item {
-  background: #f9f9f9;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-}
-
-.comment-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 5px;
-  font-size: 0.9rem;
-}
-.actions {
-  gap: 20px;
-  display: flex;
-  align-items: center;
-}
-.comment-date {
-  color: #888;
-}
-.star.active {
-  color: #ffca08;
-}
-.score {
-  font-size: 2rem;
-  font-weight: bold;
-}
-.rating-box {
-  display: flex;
-  flex-direction: row;
-  gap: 15px;
-  font-family: 'Jaldi', sans-serif;
-}
-img {
-  max-width: 150px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-.info-section {
-  justify-content: space-between;
-}
+button:disabled { background-color: #ccc; cursor: not-allowed; }
+.comment-item { background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+.comment-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9rem; }
+.actions { gap: 20px; display: flex; align-items: center; }
+.comment-date { color: #888; }
+.star.active { color: #ffca08; }
+.score { font-size: 2rem; font-weight: bold; }
+.rating-box { display: flex; flex-direction: row; gap: 15px; font-family: 'Jaldi', sans-serif; }
+img { max-width: 150px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
+.info-section { justify-content: space-between; }
 </style>

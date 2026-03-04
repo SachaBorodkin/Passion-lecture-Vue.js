@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { getUserById, deleteUser } from '@/api/users'
 
 const router = useRouter()
 const currentUser = ref(null)
@@ -10,7 +11,6 @@ onMounted(async () => {
   const userData = localStorage.getItem('user')
 
   if (!userData) {
-    // If no user is logged in, redirect to login or home
     router.push('/login')
     return
   }
@@ -18,16 +18,10 @@ onMounted(async () => {
   const localUser = JSON.parse(userData)
 
   try {
-    // Fetch fresh data from the DB to get the latest comment/rate counts
-    const response = await fetch(`http://localhost:3000/users/${localUser.id}`)
-    if (response.ok) {
-      const freshData = await response.json()
-      currentUser.value = freshData
-      // Sync localStorage with the latest stats from DB
-      localStorage.setItem('user', JSON.stringify(freshData))
-    } else {
-      currentUser.value = localUser
-    }
+    // GET /users/:id — fetch fresh data to get latest stats (comments, rates, books)
+    const { data: freshData } = await getUserById(localUser.id)
+    currentUser.value = freshData
+    localStorage.setItem('user', JSON.stringify(freshData))
   } catch (err) {
     console.error('Failed to sync user data:', err)
     currentUser.value = localUser
@@ -46,15 +40,11 @@ async function deleteAccount() {
     return
 
   try {
-    const response = await fetch(`http://localhost:3000/users/${currentUser.value.id}`, {
-      method: 'DELETE',
-    })
-
-    if (response.ok) {
-      localStorage.removeItem('user')
-      window.location.href = '/'
-      alert('Compte supprimé avec succès.')
-    }
+    // DELETE /users/:id
+    await deleteUser(currentUser.value.id)
+    localStorage.removeItem('user')
+    alert('Compte supprimé avec succès.')
+    window.location.href = '/'
   } catch (err) {
     console.error('Error deleting account:', err)
   }
@@ -104,95 +94,18 @@ async function deleteAccount() {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Jaldi:wght@400;700&display=swap');
-
-.profile-container {
-  font-family: 'Jaldi', sans-serif;
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 20px;
-}
-
-.profile-card {
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-}
-
-.profile-header {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 25px;
-}
-
-.admin-badge {
-  background: #ff4757;
-  color: white;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: bold;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-  margin-bottom: 30px;
-  text-align: center;
-}
-
-.stat-item {
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: 8px;
-}
-
-.stat-value {
-  display: block;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #148867;
-}
-
-.stat-label {
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-button {
-  padding: 10px 20px;
-  border-radius: 6px;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-
-.btn-logout {
-  background-color: #148867;
-  color: black;
-}
-
-.btn-delete {
-  background-color: #f1f1f1;
-  color: #ff4757;
-}
-
-button:hover {
-  opacity: 0.8;
-}
-
-hr {
-  border: 0;
-  border-top: 1px solid #eee;
-  margin: 20px 0;
-}
+.profile-container { font-family: 'Jaldi', sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
+.profile-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); }
+.profile-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
+.admin-badge { background: #ff4757; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; text-align: center; }
+.stat-item { background: #f8f9fa; padding: 15px; border-radius: 8px; }
+.stat-value { display: block; font-size: 1.5rem; font-weight: bold; color: #148867; }
+.stat-label { font-size: 0.9rem; color: #666; }
+.actions { display: flex; gap: 10px; margin-top: 20px; }
+button { padding: 10px 20px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; transition: opacity 0.2s; }
+.btn-logout { background-color: #148867; color: black; }
+.btn-delete { background-color: #f1f1f1; color: #ff4757; }
+button:hover { opacity: 0.8; }
+hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
 </style>

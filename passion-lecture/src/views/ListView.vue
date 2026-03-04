@@ -54,7 +54,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import axios from 'axios'
+import { getAllBooks } from '@/api/books'
 
 const books = ref([])
 const loading = ref(true)
@@ -72,7 +72,7 @@ const categories = computed(() => {
 
 const fetchContent = async () => {
   try {
-    const response = await axios.get('http://localhost:3000/books')
+    const response = await getAllBooks()
     books.value = response.data
   } catch (error) {
     console.error('Erreur lors du chargement du contenu', error)
