@@ -6,39 +6,37 @@ This template should help get you started developing with Vue 3 in Vite.
 
 [VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-## Recommended Browser Setup
+## Fonctionnalités
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+### Pour les utilisateurs
+- **Consultation des livres** : Parcourez tous les ouvrages disponibles avec filtrage par catégorie.
+- **Recherche** : Trouvez facilement des livres par titre ou auteur.
+- **Tri flexible** : Organisez les résultats par date d'ajout, titre.
+- **Évaluation** : Notez les livres avec un système d'étoiles.
+- **Commentaires** : Ecrivez des commentaires pour les livres.
+- **Utilisateur** : Consultez vos paramètres et info sur votre compte.
+- **Ajouter des livres** : Ajoutez des livres depuis la page d'ajoute de livre.
+- **Modifier les livres** : Mettez à jour les informations des livres.
+- **Gérer vos contenus** : Supprimez vos livres si nécessaire.
+- **Authentification** : Connectez-vous pour pouvoir tout voir.
 
-## Customize configuration
+### Prérequis
+- Node.js
+- npm
 
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
+### Installation
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
-
+### Lancer le site
 ```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
-
+### lancer la db
 ```sh
-npm run build
+npx json-server db.json --port 3000
 ```
 
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
