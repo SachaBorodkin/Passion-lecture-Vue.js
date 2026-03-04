@@ -22,10 +22,18 @@
         <input v-model="book.publishYear" type="number" />
       </label>
 
-      <label
-        >Catégorie
-        <input v-model="book.category" />
-      </label>
+      <label for="edit-category">Catégorie</label>
+      <input
+        id="edit-category"
+        v-model="book.category"
+        list="category-options"
+        type="text"
+        autocomplete="off"
+      />
+
+      <datalist id="category-options">
+        <option v-for="cat in availableCategories" :key="cat" :value="cat"></option>
+      </datalist>
 
       <label
         >Description
@@ -47,7 +55,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-
+const availableCategories = ref([])
 const route = useRoute()
 const router = useRouter()
 const id = String(route.params.id)
@@ -61,6 +69,13 @@ onMounted(async () => {
     const response = await fetch(`http://localhost:3000/books/${id}`) // cherche le livre dans le serveur par son id
     if (response.ok) {
       book.value = await response.json()
+    }
+    const allBooksResponse = await fetch('http://localhost:3000/books')
+    if (allBooksResponse.ok) {
+      const allBooks = await allBooksResponse.json()
+      availableCategories.value = [...new Set(allBooks.map((b) => b.category))]
+        .filter(Boolean)
+        .sort()
     }
   } catch (err) {
     console.error('Erreur lors du chargement:', err)

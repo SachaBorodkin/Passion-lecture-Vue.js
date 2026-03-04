@@ -14,8 +14,17 @@
 
       <div class="form-group">
         <label for="category">Catégorie :</label>
-        <input id="category" list="category-options" v-model="newBook.category" type="text" required autocomplete="off" />
-        
+
+        <input
+          id="category"
+          v-model="newBook.category"
+          list="category-options"
+          type="text"
+          required
+          placeholder="Choisir ou taper une catégorie"
+          autocomplete="off"
+        />
+
         <datalist id="category-options">
           <option v-for="cat in availableCategories" :key="cat" :value="cat"></option>
         </datalist>
@@ -53,23 +62,23 @@
 export default {
   // Nom du composant, utile pour le débogage dans Vue DevTools
   name: 'AddView',
-  
+
   // La fonction data retourne l'état réactif initial du composant
   data() {
     return {
       // On initialise l'objet newBook en appelant la méthode getInitialBookState
       newBook: this.getInitialBookState(),
       // Tableau pour stocker les catégories disponibles, qui peut être utilisé pour suggérer des options à l'utilisateur
-      availableCategories: []
+      availableCategories: [],
     }
   },
   mounted() {
     // Appel de la méthode pour charger les catégories disponibles dès que le composant est monté
     this.fetchCategories()
   },
-  
+
   methods: {
-    // Permet de facilement réinitialiser le formulaire en retournant un objet 
+    // Permet de facilement réinitialiser le formulaire en retournant un objet
     getInitialBookState() {
       return {
         title: '',
@@ -91,10 +100,10 @@ export default {
           // 2. new Set(...) supprime tous les doublons
           // 3. [... ] retransforme le Set en un tableau classique
           // 4. .filter(Boolean) retire les éventuelles catégories vides, null ou undefined
-          const uniqueCategories = [...new Set(books.map(book => book.category))].filter(Boolean);
-          
+          const uniqueCategories = [...new Set(books.map((book) => book.category))].filter(Boolean)
+
           // On met à jour notre liste avec les catégories triées par ordre alphabétique
-          this.availableCategories = uniqueCategories.sort();
+          this.availableCategories = uniqueCategories.sort()
         } else {
           console.error('Erreur lors du chargement des catégories')
         }
@@ -102,7 +111,7 @@ export default {
         console.error('Erreur réseau:', error)
       }
     },
-    
+
     // Méthode asynchrone appelée lors de la soumission du formulaire
     async addBook() {
       try {
@@ -114,7 +123,7 @@ export default {
           userRating: 0,
           comments: [],
           // Génère la date du jour au format YYYY-MM-DD
-          added: new Date().toISOString().split('T')[0], 
+          added: new Date().toISOString().split('T')[0],
         }
 
         // Appel API via fetch() pour envoyer les données au serveur local
@@ -130,9 +139,9 @@ export default {
         if (response.ok) {
           // Réinitialiser le formulaire visuellement en écrasant l'état actuel avec un état vide
           this.newBook = this.getInitialBookState()
-          
+
           alert('Livre ajouté avec succès!')
-          
+
           // Redirection de l'utilisateur vers la page d'accueil après l'ajout réussi
           this.$router.push('/')
         } else {
@@ -146,7 +155,6 @@ export default {
   },
 }
 </script>
-
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Jaldi:wght@400;700&display=swap');
@@ -195,10 +203,12 @@ textarea {
   font-size: 15px;
   color: #0d1526;
   background: #f8fafc;
-  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    background 0.2s;
   outline: none;
 }
-
 
 input:focus,
 textarea:focus {
@@ -232,7 +242,10 @@ button {
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+  transition:
+    background-color 0.2s,
+    transform 0.1s,
+    box-shadow 0.2s;
 }
 
 button[type='submit'] {
