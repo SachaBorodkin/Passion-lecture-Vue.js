@@ -26,7 +26,7 @@
       "password": "$2b$10$iAbfgaqpTB6PoEbuKAsuwO5ZstLUt0c4sETEuiH./PwPaIS0iL40y",
       "entryDate": "2026-02-11",
       "bookNumber": "0",
-      "rateNumber": 2,
+      "rateNumber": 3,
       "commentnumber": 1,
       "isAdmin": true
     },
@@ -1004,7 +1004,7 @@
     {
       "id": "50",
       "title": "Gatsby le Magnifique",
-      "category": "Classique",
+      "category": "sci-fi",
       "pageCount": 218,
       "excerpt": "/assets/pdf/gatsby_p1.pdf",
       "summary": "L'obsession amoureuse d'un millionnaire mystérieux durant les années folles à New York.",
@@ -1012,13 +1012,30 @@
       "editor": "Scribner",
       "publishYear": 1925,
       "userRating": 0,
-      "comments": [],
+      "comments": [
+        {
+          "id": 1772552860349,
+          "userId": "adc6",
+          "username": "testacc",
+          "text": "comment",
+          "date": "03/03/2026"
+        }
+      ],
       "added": "2026-03-30",
       "coverImage": "https://covers.openlibrary.org/b/id/12642588-L.jpg",
       "fkUserId": "7e55",
-      "totalPoints": 0,
-      "ratingCount": 0,
-      "userNotes": []
+      "totalPoints": 10,
+      "ratingCount": 2,
+      "userNotes": [
+        {
+          "userId": "adc6",
+          "note": 5
+        },
+        {
+          "userId": "acbf",
+          "note": 5
+        }
+      ]
     },
     {
       "id": "e4cf",
@@ -1032,6 +1049,19 @@
       "userRating": 0,
       "comments": [],
       "added": "2026-02-25"
+    },
+    {
+      "id": "12fa",
+      "title": "regtreg",
+      "author": "fgfgfdg",
+      "category": "sfdsfsdf",
+      "publishYear": 1999,
+      "pageCount": 234,
+      "summary": "fdbgfdgfdgfdgfdgfgfd",
+      "coverImage": "6",
+      "userRating": 0,
+      "comments": [],
+      "added": "2026-03-03"
     }
   ]
 }
