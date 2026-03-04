@@ -185,6 +185,10 @@ async function rateBook(star) {
             <p class="category"><strong>Catégorie(s) :</strong> {{ book.category }}</p>
             <p class="description">{{ book.description }}</p>
             <p class="author"><strong>Auteur(ice) :</strong>{{ book.author }}</p>
+            <p class="extrait">
+              <strong>Extrait : </strong
+              ><a :href="book.excerpt" download="extrait_livre.pdf"> Télécharger l'extrait </a>
+            </p>
           </div>
           <div v-if="canModify" class="actions">
             <button @click="editBook(book.id)">Modifier</button>
