@@ -5,7 +5,7 @@
       "username": "user",
       "password": "$2b$10$AR7KUJmSouy4Tf5c73knWu4CCrR7VX363MM/TUTe4glyelc17GR6O",
       "entryDate": "2026-02-11",
-      "bookNumber": "0",
+      "bookNumber": 0,
       "rateNumber": 0,
       "commentnumber": 0,
       "isAdmin": false
@@ -15,7 +15,7 @@
       "username": "Olek",
       "password": "$2b$10$eMxWGiWfC0HkqdfBdHKB1..vaLKSu1YJlw6U/kwACTJZM8BhZwt56",
       "entryDate": "2026-02-11",
-      "bookNumber": "0",
+      "bookNumber": 0,
       "rateNumber": 0,
       "commentnumber": 0,
       "isAdmin": false
@@ -25,7 +25,7 @@
       "username": "root",
       "password": "$2b$10$iAbfgaqpTB6PoEbuKAsuwO5ZstLUt0c4sETEuiH./PwPaIS0iL40y",
       "entryDate": "2026-02-11",
-      "bookNumber": "0",
+      "bookNumber": 1,
       "rateNumber": 3,
       "commentnumber": 1,
       "isAdmin": true
@@ -35,7 +35,7 @@
       "username": "kiril",
       "password": "$2b$10$s6A4iNQGjZzP0hRESBwY4ugmMUcEW46k0Aggm2z.dLMY4QvvLcIN.",
       "entryDate": "2026-02-24",
-      "bookNumber": "0",
+      "bookNumber": 0,
       "rateNumber": 0,
       "commentnumber": 0,
       "isAdmin": false
@@ -45,7 +45,7 @@
       "username": "Damien",
       "password": "$2b$10$fmZRtsQ2zoHEcjGS3OGjm.GVW4FqH5Y42pn94FQfHBT6HYk5s.Jx2",
       "entryDate": "2026-02-25",
-      "bookNumber": "0",
+      "bookNumber": 0,
       "rateNumber": 0,
       "commentnumber": 0,
       "isAdmin": false
@@ -968,7 +968,7 @@
       "title": "Le Rouge et le Noir",
       "category": "Classique",
       "pageCount": 600,
-      "excerpt": "/assets/pdf/rouge_noir_p1.txt",
+      "excerpt": "/assets/pdf/rouge_noir_p1.pdf",
       "summary": "L'ambition et la chute de Julien Sorel dans la société française sous la Restauration.",
       "author": "Stendhal",
       "editor": "Levavasseur",
@@ -1062,6 +1062,88 @@
       "userRating": 0,
       "comments": [],
       "added": "2026-03-03"
+    },
+    {
+      "id": "3f28",
+      "title": "5tretre",
+      "author": "tretttretre",
+      "category": "Bande dessinée",
+      "publishYear": 1967,
+      "pageCount": 67,
+      "summary": "trhtrhrthrththhrthrt",
+      "coverImage": "ththrthrt",
+      "userRating": 0,
+      "comments": [],
+      "added": "2026-03-04"
+    },
+    {
+      "id": "162e",
+      "title": "rttertretr",
+      "author": "tretretretr",
+      "category": "tretret",
+      "publishYear": 67,
+      "pageCount": 67,
+      "summary": "trhthrth",
+      "coverImage": "rthrthrth",
+      "userRating": 0,
+      "comments": [],
+      "added": "2026-03-04"
+    },
+    {
+      "id": "fa74",
+      "title": "fdvfdvfdf",
+      "author": "vfvfdvfvfvf",
+      "category": "vfdvfv",
+      "publishYear": 67,
+      "pageCount": 67,
+      "summary": "regregreg",
+      "coverImage": "ergregreg",
+      "userRating": 0,
+      "comments": [],
+      "added": "2026-03-04",
+      "userId": null
+    },
+    {
+      "id": "e69b",
+      "title": "dssdv",
+      "author": "dvsdsdv",
+      "category": "sdgd",
+      "publishYear": 67,
+      "pageCount": 67,
+      "summary": "67",
+      "coverImage": "67",
+      "userId": null,
+      "userRating": 0,
+      "comments": [],
+      "added": "2026-03-04"
+    },
+    {
+      "id": "830c",
+      "title": "76ut6",
+      "author": "6u56u56u",
+      "category": "65u56u",
+      "publishYear": 67,
+      "pageCount": 67,
+      "summary": "trhrhtrhth",
+      "coverImage": "thrtht",
+      "userId": null,
+      "userRating": 0,
+      "comments": [],
+      "added": "2026-03-04"
+    },
+    {
+      "id": "0c5e",
+      "title": "regregreg",
+      "author": "regrgrgregreg",
+      "category": "regregregrg",
+      "publishYear": 67,
+      "pageCount": 67,
+      "summary": "67",
+      "coverImage": "67",
+      "userId": "acbf",
+      "userRating": 0,
+      "comments": [],
+      "added": "2026-03-04"
     }
   ]
 }

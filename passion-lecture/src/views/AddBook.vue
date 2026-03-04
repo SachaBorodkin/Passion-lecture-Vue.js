@@ -115,38 +115,60 @@ export default {
     // Méthode asynchrone appelée lors de la soumission du formulaire
     async addBook() {
       try {
-        // Création de l'objet final à envoyer à la base de données
+        // On essaie de récupérer l'ID via plusieurs noms de clés possibles
+        // Si vous avez stocké l'objet entier, on essaie aussi de le parser
+        let userId = localStorage.getItem('userId') || localStorage.getItem('id')
+
+        // Si vous avez stocké l'utilisateur complet sous 'user', on extrait l'ID
+        if (!userId && localStorage.getItem('user')) {
+          const user = JSON.parse(localStorage.getItem('user'))
+          userId = user.id
+        }
+
+        if (!userId) {
+          console.error('LocalStorage actuel :', localStorage) // Pour déboguer
+          alert(
+            "Erreur : Votre session a expiré ou l'ID utilisateur est introuvable. Reconnectez-vous.",
+          )
+          return
+        }
+
+        // Préparation du livre
         const bookToSave = {
-          // L'opérateur de décomposition (spread operator '...') copie toutes les propriétés de this.newBook
           ...this.newBook,
-          // Ajout de champs par défaut qui ne sont pas gérés par le formulaire utilisateur
+          userId: userId,
           userRating: 0,
           comments: [],
-          // Génère la date du jour au format YYYY-MM-DD
           added: new Date().toISOString().split('T')[0],
         }
 
-        // Appel API via fetch() pour envoyer les données au serveur local
-        const response = await fetch('http://localhost:3000/books', {
-          method: 'POST', // Indique qu'on veut créer une nouvelle ressource
-          headers: {
-            'Content-Type': 'application/json', // Précise que le corps de la requête est en JSON
-          },
-          body: JSON.stringify(bookToSave), // Convertit l'objet JavaScript en chaîne JSON
+        // 1. Sauvegarde du livre
+        const bookResponse = await fetch('http://localhost:3000/books', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(bookToSave),
         })
 
-        // Vérifie si la requête a réussi
-        if (response.ok) {
-          // Réinitialiser le formulaire visuellement en écrasant l'état actuel avec un état vide
+        if (bookResponse.ok) {
+          // 2. Mise à jour du compteur bookNumber
+          const userRes = await fetch(`http://localhost:3000/users/${userId}`)
+          if (userRes.ok) {
+            const userData = await userRes.json()
+
+            // Calcul sécurisé (force le type Number)
+            const currentNumber = Number(userData.bookNumber) || 0
+            const newNumber = currentNumber + 1
+
+            await fetch(`http://localhost:3000/users/${userId}`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ bookNumber: newNumber }),
+            })
+          }
+
+          alert('Livre ajouté avec succès !')
           this.newBook = this.getInitialBookState()
-
-          alert('Livre ajouté avec succès!')
-
-          // Redirection de l'utilisateur vers la page d'accueil après l'ajout réussi
           this.$router.push('/')
-        } else {
-          // Gère le cas où le serveur a répondu, mais avec une erreur
-          alert("Erreur lors de l'ajout du livre.")
         }
       } catch (error) {
         console.error('Erreur:', error)
