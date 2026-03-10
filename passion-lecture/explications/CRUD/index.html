@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Exemples CRUD Vue.js</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 40px auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background: #f4f4f4;
+      }
+      button {
+        margin: 2px;
+        cursor: pointer;
+        padding: 4px 10px;
+      }
+      input,
+      textarea {
+        padding: 6px;
+        margin: 4px 0;
+      }
+      .tab-bar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .tab-bar button {
+        padding: 8px 16px;
+      }
+      .tab-bar button.active {
+        background: #42b883;
+        color: white;
+        border: none;
+      }
+      .error {
+        color: red;
+        font-size: 0.9em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <!-- Barre d'onglets pour naviguer entre les exemples -->
+      <div class="tab-bar">
+        <button
+          v-for="tab in tabs"
+          :key="tab"
+          :class="{ active: currentTab === tab }"
+          @click="currentTab = tab"
+        >
+          {{ tab }}
+        </button>
+      </div>
+
+      <!-- Affichage conditionnel de chaque composant CRUD -->
+      <todo-crud v-if="currentTab === 'Todos'"></todo-crud>
+      <user-crud v-if="currentTab === 'Users'"></user-crud>
+      <product-crud v-if="currentTab === 'Products'"></product-crud>
+      <note-crud v-if="currentTab === 'Notes'"></note-crud>
+    </div>
+
+    <!-- Chargement de Vue 3 via CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Chargement de chaque fichier CRUD -->
+    <script src="todo-crud.js"></script>
+    <script src="user-crud.js"></script>
+    <script src="product-crud.js"></script>
+    <script src="note-crud.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
