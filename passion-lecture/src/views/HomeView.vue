@@ -10,8 +10,12 @@
     </p>
     <h1>Les 5 dernières ouvrages</h1>
     <a href="/books"><button class="explore-button">Explorer les livres</button></a>
+
+    <!-- Pendant le chargement API, on affiche un message d'attente -->
     <div v-if="loading">Chargement...</div>
 
+    <!-- Une fois les données reçues (loading = false), on affiche les livres -->
+    <!-- v-for parcourt le tableau lastFiveBooks et crée une carte pour chaque livre -->
     <div v-else class="book-list">
       <div v-for="book in lastFiveBooks" :key="book.id" class="book-card">
         <router-link :to="{ name: 'BookDetails', params: { id: book.id } }">
@@ -28,28 +32,56 @@
 </template>
 
 <script setup>
+// ============================================================
+//  HomeView.vue  —  Page d'accueil
+// ============================================================
+//
+//  FLUX D'APPEL API ICI :
+//  -----------------------
+//  1. Le composant se monte (onMounted)
+//  2. → fetchBooks() est appelée
+//  3.   → getAllBooks() envoie GET /books via apiClient (axios.js)
+//  4.     → json-server répond avec tous les livres en JSON
+//  5.   → books.value reçoit le tableau (response.data)
+//  6.   → loading.value passe à false
+//  7. → Vue re-rend le template : v-if="loading" disparaît, v-else s'affiche
+//  8. → lastFiveBooks (computed) filtre automatiquement les 5 plus récents
+//
+// ============================================================
+
 import { ref, computed, onMounted } from 'vue'
-import { getAllBooks } from '@/api/books'
+import { getAllBooks } from '@/api/books' // On utilise la fonction centralisée de books.js
 
-const books = ref([])
-const loading = ref(true)
+// ref() crée une variable réactive : quand sa valeur change, Vue met à jour le template
+const books = ref([]) // Tableau vide au départ, sera rempli après l'appel API
+const loading = ref(true) // true = "en cours de chargement", affiche le message d'attente
 
+// computed() = valeur calculée automatiquement à chaque fois que books.value change.
+// Pas besoin d'appeler une fonction, Vue recalcule tout seul.
 const lastFiveBooks = computed(() => {
-  //copie la liste des livres, prends les plus récents et prends 5 livres les plus récents
+  // On copie le tableau avec [...] pour ne pas modifier l'original (immuabilité)
+  // .sort() compare les dates : le plus récent (b - a) passe en premier
+  // .slice(0, 5) garde seulement les 5 premiers
   return [...books.value].sort((a, b) => new Date(b.added) - new Date(a.added)).slice(0, 5)
 })
 
 const fetchBooks = async () => {
   try {
-    //envoie de la requete dans db et sauvegarde de la réponse
+    // ↓ getAllBooks() retourne une Promise → await attend la réponse du serveur
+    // ↓ La réponse axios a la forme : { data: [...], status: 200, headers: {...} }
     const response = await getAllBooks()
-    books.value = response.data
+    books.value = response.data // On stocke le tableau de livres dans notre ref()
   } catch (error) {
+    // Si l'API est hors ligne ou retourne une erreur, on l'affiche dans la console
     console.error('Erreur API', error)
   } finally {
+    // finally s'exécute TOUJOURS (succès ou erreur) → on arrête le chargement
     loading.value = false
   }
 }
+
+// onMounted = hook de cycle de vie : s'exécute une seule fois, quand le composant
+// est inséré dans le DOM. C'est le bon endroit pour charger des données.
 onMounted(fetchBooks)
 </script>
 
@@ -64,18 +96,6 @@ onMounted(fetchBooks)
 .home a {
   text-decoration: none;
   color: black;
-}
-.content-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 20px 0;
-}
-.content-card {
-  border: 1px solid #ddd;
-  padding: 15px;
-  border-radius: 8px;
-  background: #fff;
 }
 .book-list {
   display: flex;
