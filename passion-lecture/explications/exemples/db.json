@@ -1,0 +1,12 @@
+{
+  "utilisateurs": [
+    { "id": 1, "nom": "Alice Martin", "email": "alice@example.com", "age": 28 },
+    { "id": 2, "nom": "Bob Dupont", "email": "bob@example.com", "age": 35 },
+    { "id": 3, "nom": "Clara Petit", "email": "clara@example.com", "age": 22 }
+  ],
+  "produits": [
+    { "id": 1, "nom": "Laptop", "prix": 999, "stock": 10 },
+    { "id": 2, "nom": "Souris", "prix": 29, "stock": 50 },
+    { "id": 3, "nom": "Clavier", "prix": 79, "stock": 30 }
+  ]
+}
