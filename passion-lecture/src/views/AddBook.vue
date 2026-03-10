@@ -57,24 +57,45 @@
 </template>
 
 <script>
-import { getAllBooks, createBook } from '@/api/books'
-import { getUserById, updateUser } from '@/api/users'
+// ============================================================
+//  AddBook.vue  —  Formulaire d'ajout d'un livre
+// ============================================================
+//
+//  FLUX D'APPEL API :
+//  ------------------
+//  Au montage :
+//    1. fetchCategories() → GET /books → extrait les catégories pour la datalist
+//
+//  À la soumission du formulaire (addBook) :
+//    2. createBook(bookToSave)          →  POST   /books         (CREATE)
+//    3. getUserById(userId)             →  GET    /users/:id     (READ)
+//    4. updateUser(userId, {bookNumber}) → PATCH  /users/:id     (UPDATE)
+//
+//  ORDRE IMPORTANT : on crée d'abord le livre, PUIS on met à jour le compteur user.
+//  Si l'étape 2 échoue, les étapes 3 et 4 ne s'exécutent pas (le catch arrête tout).
+//
+// ============================================================
+
+import { getAllBooks, createBook } from '@/api/books' // C(reate) + R(ead all)
+import { getUserById, updateUser } from '@/api/users' // R(ead) + U(pdate)
 
 export default {
   name: 'AddView',
 
   data() {
     return {
-      newBook: this.getInitialBookState(),
-      availableCategories: [],
+      newBook: this.getInitialBookState(), // État initial du formulaire (champs vides)
+      availableCategories: [], // Rempli par fetchCategories()
     }
   },
 
   mounted() {
-    this.fetchCategories()
+    this.fetchCategories() // Dès que le composant est prêt → on charge les catégories
   },
 
   methods: {
+    // Retourne un objet avec tous les champs du formulaire à zéro
+    // Utilisé au chargement ET après soumission (pour vider le formulaire)
     getInitialBookState() {
       return {
         title: '',
@@ -87,10 +108,14 @@ export default {
       }
     },
 
+    // ── READ ────────────────────────────────────────────────────────────────
+    //  GET /books  → on récupère tous les livres juste pour extraire les
+    //  catégories existantes et les proposer dans la datalist.
+    //  On n'a pas besoin des livres eux-mêmes ici.
     async fetchCategories() {
       try {
-        // GET /books — fetch all books to extract unique categories
         const { data: books } = await getAllBooks()
+        // Destructuring : { data: books } extrait response.data et le renomme "books"
         const uniqueCategories = [...new Set(books.map((b) => b.category))].filter(Boolean)
         this.availableCategories = uniqueCategories.sort()
       } catch (error) {
@@ -100,6 +125,7 @@ export default {
 
     async addBook() {
       try {
+        // Récupère l'ID de l'utilisateur connecté depuis le localStorage
         let userId = localStorage.getItem('userId') || localStorage.getItem('id')
         if (!userId && localStorage.getItem('user')) {
           const user = JSON.parse(localStorage.getItem('user'))
@@ -107,30 +133,39 @@ export default {
         }
 
         if (!userId) {
-          alert("Erreur : Votre session a expiré ou l'ID utilisateur est introuvable. Reconnectez-vous.")
+          alert('Erreur : Votre session a expiré. Reconnectez-vous.')
           return
         }
 
+        // On construit l'objet complet à envoyer à l'API
+        // ...this.newBook = on copie tous les champs du formulaire
+        // puis on ajoute les champs auto-générés (userId, date, etc.)
         const bookToSave = {
           ...this.newBook,
           userId,
           userRating: 0,
           comments: [],
-          added: new Date().toISOString().split('T')[0],
+          added: new Date().toISOString().split('T')[0], // Date du jour : "2026-03-10"
         }
 
-        // POST /books — create the new book
+        // ── CREATE ──────────────────────────────────────────────────────────
+        //  POST /books avec bookToSave dans le body
+        //  json-server génère un ID et sauvegarde dans db.json
         await createBook(bookToSave)
 
-        // GET /users/:id — fetch current stats
+        // ── READ ────────────────────────────────────────────────────────────
+        //  GET /users/:id  → on relit l'utilisateur pour avoir son bookNumber actuel
+        //  (on ne fait pas confiance au localStorage qui peut être désynchronisé)
         const { data: userData } = await getUserById(userId)
         const newNumber = (Number(userData.bookNumber) || 0) + 1
 
-        // PATCH /users/:id — increment bookNumber counter
+        // ── UPDATE ──────────────────────────────────────────────────────────
+        //  PATCH /users/:id  → on incrémente uniquement le champ bookNumber
+        //  PATCH ne touche pas aux autres champs (username, password, etc.)
         await updateUser(userId, { bookNumber: newNumber })
 
         alert('Livre ajouté avec succès !')
-        this.newBook = this.getInitialBookState()
+        this.newBook = this.getInitialBookState() // Vide le formulaire
         this.$router.push('/')
       } catch (error) {
         console.error("Erreur lors de l'ajout du livre:", error)
@@ -161,7 +196,9 @@ export default {
   color: #0d1526;
   letter-spacing: 0.01em;
 }
-.form-group { margin-bottom: 28px; }
+.form-group {
+  margin-bottom: 28px;
+}
 label {
   display: block;
   margin-bottom: 8px;
@@ -170,7 +207,8 @@ label {
   color: #374151;
   letter-spacing: 0.01em;
 }
-input, textarea {
+input,
+textarea {
   width: 100%;
   padding: 13px 16px;
   border: 1.5px solid #e2e8f0;
@@ -180,16 +218,26 @@ input, textarea {
   font-size: 15px;
   color: #0d1526;
   background: #f8fafc;
-  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    background 0.2s;
   outline: none;
 }
-input:focus, textarea:focus {
+input:focus,
+textarea:focus {
   border-color: #3ecf8e;
   background: #ffffff;
   box-shadow: 0 0 0 3px rgba(62, 207, 142, 0.15);
 }
-input::placeholder, textarea::placeholder { color: #b0bec5; }
-textarea { resize: vertical; min-height: 120px; }
+input::placeholder,
+textarea::placeholder {
+  color: #b0bec5;
+}
+textarea {
+  resize: vertical;
+  min-height: 120px;
+}
 .form-actions {
   display: flex;
   justify-content: flex-start;
@@ -204,7 +252,10 @@ button {
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+  transition:
+    background-color 0.2s,
+    transform 0.1s,
+    box-shadow 0.2s;
 }
 button[type='submit'] {
   background-color: #3ecf8e;
@@ -216,7 +267,9 @@ button[type='submit']:hover {
   box-shadow: 0 4px 14px rgba(62, 207, 142, 0.4);
   transform: translateY(-1px);
 }
-button[type='submit']:active { transform: translateY(0); }
+button[type='submit']:active {
+  transform: translateY(0);
+}
 .btn-cancel {
   background-color: transparent;
   color: #64748b;

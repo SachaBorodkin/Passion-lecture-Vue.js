@@ -53,64 +53,96 @@
 </template>
 
 <script setup>
+// ============================================================
+//  ListView.vue  —  Liste de tous les livres avec filtres/tri
+// ============================================================
+//
+//  FLUX D'APPEL API :
+//  ------------------
+//  1. onMounted → fetchContent()
+//  2.   → getAllBooks()  :  GET /books  → tous les livres dans books.value
+//  3. loading passe à false → les livres s'affichent
+//
+//  PAS D'AUTRE APPEL API ICI : la recherche, le filtre et le tri
+//  sont faits LOCALEMENT dans le computed filteredBooks, sans retourner
+//  au serveur. On charge tout une fois, on filtre côté client.
+//
+// ============================================================
+
 import { ref, computed, onMounted } from 'vue'
-import { getAllBooks } from '@/api/books'
+import { getAllBooks } from '@/api/books' // READ : récupère tous les livres
 
-const books = ref([])
-const loading = ref(true)
+// --- Variables réactives ---
+const books = ref([]) // Tous les livres reçus de l'API
+const loading = ref(true) // Indicateur de chargement
 
-const searchQuery = ref('') // valeur qui est dans l'input de recherche
-const activeSearch = ref('') // valeur qui est appliquée pour filtrer les livres
+const searchQuery = ref('') // Ce que l'utilisateur tape dans l'input
+const activeSearch = ref('') // Ce qui est réellement appliqué au filtre (déclenché par Entrée ou bouton)
 
-const selectedCategory = ref('')
-const sortOption = ref('addedDesc')
+const selectedCategory = ref('') // Catégorie sélectionnée dans le <select>
+const sortOption = ref('addedDesc') // Option de tri sélectionnée
 
+// computed : extrait les catégories uniques de tous les livres pour le <select>
+// Set() supprime les doublons, [...new Set()] reconvertit en tableau
 const categories = computed(() => {
   const allCats = books.value.map((b) => b.category)
   return [...new Set(allCats)]
 })
 
+// Appel API : GET /books → stocke tous les livres dans books.value
 const fetchContent = async () => {
   try {
-    const response = await getAllBooks()
-    books.value = response.data
+    const response = await getAllBooks() // Attend la réponse du serveur
+    books.value = response.data // response.data = tableau de tous les livres
   } catch (error) {
     console.error('Erreur lors du chargement du contenu', error)
   } finally {
-    loading.value = false
+    loading.value = false // Qu'il y ait une erreur ou non, on arrête le chargement
   }
 }
 
+// S'exécute au montage du composant (une seule fois)
 onMounted(() => {
   return fetchContent()
 })
 
+// computed : calcule dynamiquement la liste affichée selon les filtres et le tri.
+// Se recalcule automatiquement quand books.value, activeSearch, selectedCategory
+// ou sortOption changent.
 const filteredBooks = computed(() => {
   return books.value
     .filter((book) => {
+      // Vérifie que le titre contient la recherche (insensible à la casse)
       const matchesSearch = book.title.toLowerCase().includes(activeSearch.value.toLowerCase())
+      // Vérifie la catégorie (si '' = toutes les catégories → toujours true)
       const matchesCategory =
         selectedCategory.value === '' || book.category === selectedCategory.value
-      return matchesSearch && matchesCategory
+      return matchesSearch && matchesCategory // Les deux conditions doivent être vraies
     })
     .sort((a, b) => {
+      // .sort() compare deux éléments a et b :
+      //   retourne < 0 → a avant b
+      //   retourne > 0 → b avant a
+      //   retourne 0   → ordre inchangé
       switch (sortOption.value) {
         case 'title':
-          return a.title.localeCompare(b.title) // compare les titres des livres deux par deux
+          return a.title.localeCompare(b.title) // Tri alphabétique A→Z
         case 'titleDesc':
-          return b.title.localeCompare(a.title)
+          return b.title.localeCompare(a.title) // Tri alphabétique Z→A
         case 'year':
-          return a.publishYear - b.publishYear // fait un calcul et si retourne un nombre négatif -> a avant b
+          return a.publishYear - b.publishYear // Année croissante
         case 'yearDesc':
-          return b.publishYear - a.publishYear
+          return b.publishYear - a.publishYear // Année décroissante
         case 'added':
-          return a.added - b.added
+          return a.added - b.added // Date d'ajout croissante
         case 'addedDesc':
         default:
-          return new Date(b.added) - new Date(a.added)
+          return new Date(b.added) - new Date(a.added) // Plus récents en premier (par défaut)
       }
     })
 })
+
+// Déclenché par le bouton ou la touche Entrée : applique la recherche
 const applySearch = () => {
   activeSearch.value = searchQuery.value
 }
