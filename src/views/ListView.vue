@@ -54,10 +54,9 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { getAllBooks } from '@/api/books'
+import { getBooks } from '@/composables/getBooks'
 
-const books = ref([])
-const loading = ref(true)
+const { books, loading, fetchBooks } = getBooks()
 
 const searchQuery = ref('') // valeur qui est dans l'input de recherche
 const activeSearch = ref('') // valeur qui est appliquée pour filtrer les livres
@@ -68,21 +67,6 @@ const sortOption = ref('addedDesc')
 const categories = computed(() => {
   const allCats = books.value.map((b) => b.category)
   return [...new Set(allCats)]
-})
-
-const fetchContent = async () => {
-  try {
-    const response = await getAllBooks()
-    books.value = response.data
-  } catch (error) {
-    console.error('Erreur lors du chargement du contenu', error)
-  } finally {
-    loading.value = false
-  }
-}
-
-onMounted(() => {
-  return fetchContent()
 })
 
 const filteredBooks = computed(() => {
@@ -114,6 +98,8 @@ const filteredBooks = computed(() => {
 const applySearch = () => {
   activeSearch.value = searchQuery.value
 }
+
+onMounted(fetchBooks)
 </script>
 
 <style scoped>
