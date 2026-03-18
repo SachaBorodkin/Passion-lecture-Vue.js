@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { getBookById, updateBook, deleteBook } from '@/api/books'
 import { updateUser } from '@/api/users'
 import ShowComments from '@/components/ShowComments.vue'
-
+import BookDetails from '@/components/BookDetails.vue'
 const currentUserId = ref(null)
 const currentUser = ref(null)
 const route = useRoute()
@@ -103,32 +103,13 @@ async function rateBook(star) {
 
 <template>
   <div class="container">
-    <div v-if="loading">Chargement du livre...</div>
-
-    <div v-else-if="book" class="book-details-wrapper">
-      <div class="book-details">
-        <div class="image-section">
-          <img :src="book.coverImage || '/default-cover.jpg'" :alt="book.title" />
-        </div>
-
-        <div class="info-section">
-          <div class="left">
-            <h1>{{ book.title }}</h1>
-            <p class="year"><strong>Année :</strong> {{ book.publishYear }}</p>
-            <p class="category"><strong>Catégorie(s) :</strong> {{ book.category }}</p>
-            <p class="description">{{ book.description }}</p>
-            <p class="author"><strong>Auteur(ice) :</strong>{{ book.author }}</p>
-            <p class="extrait">
-              <strong>Extrait : </strong>
-              <a :href="book.excerpt" download="extrait_livre.pdf"> Télécharger l'extrait </a>
-            </p>
-          </div>
-          <div v-if="canModify" class="actions">
-            <button @click="editBook(book.id)">Modifier</button>
-            <button @click="handleDeleteBook(book.id)" class="delete-btn">Supprimer</button>
-          </div>
-        </div>
-      </div>
+<BookDetails 
+      :book="book" 
+      :loading="loading" 
+      :canModify="canModify"
+      @edit="editBook"
+      @delete="handleDeleteBook"
+    />
 
       <hr />
 
@@ -156,8 +137,7 @@ async function rateBook(star) {
         @commentAdded="onCommentAdded" 
       />
       </div>
-      
-    </div>
+
 </template>
 
 <style scoped>
