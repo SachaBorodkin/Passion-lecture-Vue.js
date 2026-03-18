@@ -28,28 +28,16 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { getAllBooks } from '@/api/books'
+import { computed, onMounted } from 'vue'
+import { getBooks } from '@/composables/getBooks'
 
-const books = ref([])
-const loading = ref(true)
+const { books, loading, fetchBooks } = getBooks()
 
 const lastFiveBooks = computed(() => {
   //copie la liste des livres, prends les plus récents et prends 5 livres les plus récents
   return [...books.value].sort((a, b) => new Date(b.added) - new Date(a.added)).slice(0, 5)
 })
 
-const fetchBooks = async () => {
-  try {
-    //envoie de la requete dans db et sauvegarde de la réponse
-    const response = await getAllBooks()
-    books.value = response.data
-  } catch (error) {
-    console.error('Erreur API', error)
-  } finally {
-    loading.value = false
-  }
-}
 onMounted(fetchBooks)
 </script>
 
