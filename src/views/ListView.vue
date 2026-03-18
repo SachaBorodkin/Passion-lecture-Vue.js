@@ -65,6 +65,7 @@ const selectedCategory = ref('')
 const sortOption = ref('addedDesc')
 
 const categories = computed(() => {
+  if (!books.value) return []
   const allCats = books.value.map((b) => b.category)
   return [...new Set(allCats)]
 })
