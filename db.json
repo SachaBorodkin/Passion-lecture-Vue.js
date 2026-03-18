@@ -804,7 +804,7 @@
       "publishYear": 1977,
       "userRating": 0,
       "comments": [],
-      "added": "2026-03-19",
+      "added": "2026-03-13",
       "coverImage": "https://covers.openlibrary.org/b/id/12642577-L.jpg",
       "fkUserId": "7e55",
       "totalPoints": 0,
@@ -823,7 +823,7 @@
       "publishYear": 1857,
       "userRating": 0,
       "comments": [],
-      "added": "2026-03-20",
+      "added": "2026-03-13",
       "coverImage": "https://covers.openlibrary.org/b/id/12642578-L.jpg",
       "fkUserId": "2e33",
       "totalPoints": 0,
@@ -842,7 +842,7 @@
       "publishYear": 1969,
       "userRating": 0,
       "comments": [],
-      "added": "2026-03-21",
+      "added": "2026-03-13",
       "coverImage": "https://covers.openlibrary.org/b/id/12642579-L.jpg",
       "fkUserId": "7e55",
       "totalPoints": 0,
@@ -861,7 +861,7 @@
       "publishYear": -800,
       "userRating": 0,
       "comments": [],
-      "added": "2026-03-22",
+      "added": "2026-03-13",
       "coverImage": "https://covers.openlibrary.org/b/id/12642580-L.jpg",
       "fkUserId": "7e55",
       "totalPoints": 0,
@@ -880,7 +880,7 @@
       "publishYear": 1945,
       "userRating": 0,
       "comments": [],
-      "added": "2026-03-23",
+      "added": "2026-03-13",
       "coverImage": "https://covers.openlibrary.org/b/id/12642581-L.jpg",
       "fkUserId": "7e55",
       "totalPoints": 0,
@@ -899,7 +899,7 @@
       "publishYear": 1977,
       "userRating": 0,
       "comments": [],
-      "added": "2026-03-24",
+      "added": "2026-03-13",
       "coverImage": "https://covers.openlibrary.org/b/id/12642582-L.jpg",
       "fkUserId": "7e55",
       "totalPoints": 0,
@@ -918,7 +918,7 @@
       "publishYear": 1759,
       "userRating": 0,
       "comments": [],
-      "added": "2026-03-25",
+      "added": "2026-03-13",
       "coverImage": "https://covers.openlibrary.org/b/id/12642583-L.jpg",
       "fkUserId": "8d22",
       "totalPoints": 0,
@@ -937,7 +937,7 @@
       "publishYear": 1967,
       "userRating": 0,
       "comments": [],
-      "added": "2026-03-26",
+      "added": "2026-03-14",
       "coverImage": "https://covers.openlibrary.org/b/id/12642584-L.jpg",
       "fkUserId": "7e55",
       "totalPoints": 0,
@@ -956,7 +956,7 @@
       "publishYear": 1984,
       "userRating": 0,
       "comments": [],
-      "added": "2026-03-27",
+      "added": "2026-03-15",
       "coverImage": "https://covers.openlibrary.org/b/id/12642585-L.jpg",
       "fkUserId": "7e55",
       "totalPoints": 0,
@@ -975,7 +975,7 @@
       "publishYear": 1830,
       "userRating": 0,
       "comments": [],
-      "added": "2026-03-28",
+      "added": "2026-03-16",
       "coverImage": "https://covers.openlibrary.org/b/id/12642586-L.jpg",
       "fkUserId": "7e55",
       "totalPoints": 0,
@@ -994,7 +994,7 @@
       "publishYear": 1915,
       "userRating": 0,
       "comments": [],
-      "added": "2026-03-29",
+      "added": "2026-03-17",
       "coverImage": "https://covers.openlibrary.org/b/id/12642587-L.jpg",
       "fkUserId": "9b11",
       "totalPoints": 0,
@@ -1035,7 +1035,7 @@
           "date": "18/03/2026"
         }
       ],
-      "added": "2026-03-30",
+      "added": "2026-03-18",
       "coverImage": "https://covers.openlibrary.org/b/id/12642588-L.jpg",
       "fkUserId": "7e55",
       "totalPoints": 10,
@@ -1159,6 +1159,11 @@
       "comments": [],
       "added": "2026-03-04"
     }
+<<<<<<< Updated upstream
   ],
   "$schema": "./node_modules/json-server/schema.json"
 }
+=======
+  ]
+}
+>>>>>>> Stashed changes
