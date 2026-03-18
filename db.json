@@ -1159,11 +1159,5 @@
       "comments": [],
       "added": "2026-03-04"
     }
-<<<<<<< Updated upstream
-  ],
-  "$schema": "./node_modules/json-server/schema.json"
-}
-=======
   ]
 }
->>>>>>> Stashed changes
