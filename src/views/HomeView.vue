@@ -9,7 +9,6 @@
       ajoutez vos propres livres et échangez avec la communauté !
     </p>
     <h1>Les 5 dernières ouvrages</h1>
-    <a href="/books"><button class="explore-button">Explorer les livres</button></a>
     <div v-if="loading">Chargement...</div>
 
     <div v-else class="book-list">
