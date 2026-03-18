@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getBookById, updateBook, deleteBook } from '@/api/books'
 import { updateUser } from '@/api/users'
+import ShowComments from '@/components/ShowComments.vue'
 
 const currentUserId = ref(null)
 const currentUser = ref(null)
@@ -12,7 +13,6 @@ const hoverRating = ref(0)
 const id = String(route.params.id)
 const book = ref(null)
 const loading = ref(true)
-const newComment = ref('')
 
 const canModify = computed(() => {
   if (!currentUser.value || !book.value) return false
@@ -40,36 +40,6 @@ onMounted(async () => {
   }
 })
 
-async function submitComment() {
-  if (!newComment.value.trim() || !currentUserId.value) return
-
-  const commentObj = {
-    id: Date.now(),
-    userId: currentUserId.value,
-    username: currentUser.value.username,
-    text: newComment.value,
-    date: new Date().toLocaleDateString('fr-FR'),
-  }
-
-  const updatedComments = book.value.comments
-    ? [...book.value.comments, commentObj]
-    : [commentObj]
-
-  try {
-    // PATCH /books/:id — add the new comment to the book
-    await updateBook(book.value.id, { comments: updatedComments })
-    book.value.comments = updatedComments
-    newComment.value = ''
-
-    // PATCH /users/:id — increment commentnumber counter
-    const newCommentCount = (currentUser.value.commentnumber || 0) + 1
-    await updateUser(currentUserId.value, { commentnumber: newCommentCount })
-    currentUser.value.commentnumber = newCommentCount
-    localStorage.setItem('user', JSON.stringify(currentUser.value))
-  } catch (err) {
-    console.error('Erreur lors de la publication du commentaire:', err)
-  }
-}
 
 const averageRating = computed(() => {
   if (!book.value || !book.value.ratingCount || book.value.ratingCount === 0) return '0.0'
@@ -180,35 +150,14 @@ async function rateBook(star) {
         <p>({{ book.ratingCount || 0 }} avis)</p>
       </div>
       <hr />
-
-      <div class="comments-section">
-        <h3>Commentaires ({{ book.comments?.length || 0 }})</h3>
-
-        <div v-if="currentUserId" class="comment-form">
-          <textarea
-            v-model="newComment"
-            placeholder="Partagez votre avis sur ce livre..."
-            rows="3"
-          ></textarea>
-          <button @click="submitComment" :disabled="!newComment.trim()">
-            Publier le commentaire
-          </button>
-        </div>
-        <p v-else><em>Connectez-vous pour laisser un commentaire.</em></p>
-
-        <div class="comments-list">
-          <div v-for="comment in book.comments" :key="comment.id" class="comment-item">
-            <div class="comment-header">
-              <strong>{{ comment.username }}</strong>
-              <span class="comment-date">{{ comment.date }}</span>
-            </div>
-            <p>{{ comment.text }}</p>
-          </div>
-          <p v-if="!book.comments?.length">Aucun commentaire pour le moment.</p>
-        </div>
+<ShowComments 
+        :book="book" 
+        :currentUser="currentUser" 
+        @commentAdded="onCommentAdded" 
+      />
       </div>
+      
     </div>
-  </div>
 </template>
 
 <style scoped>
@@ -216,23 +165,7 @@ async function rateBook(star) {
 .container { width: 1400px; margin: 0 auto; padding: 20px; }
 .book-details { font-family: 'Jaldi', sans-serif; display: flex; gap: 40px; margin-top: 20px; }
 .star { color: #ccc; cursor: pointer; font-size: 1.5rem; }
-.comments-section { margin-top: 30px; font-family: 'Jaldi', sans-serif; text-align: left; }
-.comment-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
-textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; resize: vertical; }
-button {
-  align-self: flex-end;
-  padding: 8px 16px;
-  background-color: #148867;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-}
-button:disabled { background-color: #ccc; cursor: not-allowed; }
-.comment-item { background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-.comment-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9rem; }
-.actions { gap: 20px; display: flex; align-items: center; }
-.comment-date { color: #888; }
+textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; resize: vertical; }.actions { gap: 20px; display: flex; align-items: center; }
 .star.active { color: #ffca08; }
 .score { font-size: 2rem; font-weight: bold; }
 .rating-box { display: flex; flex-direction: row; gap: 15px; font-family: 'Jaldi', sans-serif; }
