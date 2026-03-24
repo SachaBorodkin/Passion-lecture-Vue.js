@@ -23,7 +23,7 @@ const canModify = computed(() => {
 
 onMounted(async () => {
   try {
-    // GET /books/:id — load book details
+
     const { data } = await getBookById(id)
     book.value = data
   } catch (err) {
@@ -59,7 +59,6 @@ function editBook(bookId) {
 async function handleDeleteBook(bookId) {
   if (confirm('Voulez-vous vraiment supprimer ce livre ?')) {
     try {
-      // DELETE /books/:id
       await deleteBook(bookId)
       router.push('/list')
     } catch (err) {
@@ -84,13 +83,12 @@ async function rateBook(star) {
   const ratingCount = newNotes.length
 
   try {
-    // PATCH /books/:id — save the new rating
+
     await updateBook(book.value.id, { totalPoints, ratingCount, userNotes: newNotes })
     book.value.userNotes = newNotes
     book.value.totalPoints = totalPoints
     book.value.ratingCount = ratingCount
 
-    // PATCH /users/:id — increment rateNumber counter
     const newRateCount = (currentUser.value.rateNumber || 0) + 1
     await updateUser(currentUserId.value, { rateNumber: newRateCount })
     currentUser.value.rateNumber = newRateCount
@@ -103,9 +101,9 @@ async function rateBook(star) {
 
 <template>
   <div class="container">
-<BookDetails 
-      :book="book" 
-      :loading="loading" 
+<BookDetails
+      :book="book"
+      :loading="loading"
       :canModify="canModify"
       @edit="editBook"
       @delete="handleDeleteBook"
@@ -131,10 +129,10 @@ async function rateBook(star) {
         <p>({{ book.ratingCount || 0 }} avis)</p>
       </div>
       <hr />
-<ShowComments 
-        :book="book" 
-        :currentUser="currentUser" 
-        @commentAdded="onCommentAdded" 
+<ShowComments
+        :book="book"
+        :currentUser="currentUser"
+        @commentAdded="onCommentAdded"
       />
       </div>
 
