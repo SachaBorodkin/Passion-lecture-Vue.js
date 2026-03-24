@@ -18,7 +18,7 @@ onMounted(async () => {
   const localUser = JSON.parse(userData)
 
   try {
-    // GET /users/:id — fetch fresh data to get latest stats (comments, rates, books)
+
     const { data: freshData } = await getUserById(localUser.id)
     currentUser.value = freshData
     localStorage.setItem('user', JSON.stringify(freshData))
@@ -40,7 +40,7 @@ async function deleteAccount() {
     return
 
   try {
-    // DELETE /users/:id
+
     await deleteUser(currentUser.value.id)
     localStorage.removeItem('user')
     alert('Compte supprimé avec succès.')
