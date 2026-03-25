@@ -11,7 +11,7 @@ const route = useRoute()
 const router = useRouter()
 const hoverRating = ref(0)
 const id = String(route.params.id)
-const book = ref(null)
+const book = ref([])
 const loading = ref(true)
 
 const canModify = computed(() => {
@@ -23,7 +23,6 @@ const canModify = computed(() => {
 
 onMounted(async () => {
   try {
-
     const { data } = await getBookById(id)
     book.value = data
   } catch (err) {
@@ -39,7 +38,6 @@ onMounted(async () => {
     currentUserId.value = currentUser.value.id
   }
 })
-
 
 const averageRating = computed(() => {
   if (!book.value || !book.value.ratingCount || book.value.ratingCount === 0) return '0.0'
@@ -60,7 +58,7 @@ async function handleDeleteBook(bookId) {
   if (confirm('Voulez-vous vraiment supprimer ce livre ?')) {
     try {
       await deleteBook(bookId)
-      router.push('/list')
+      router.push('/books')
     } catch (err) {
       console.error('Erreur lors de la suppression:', err)
     }
@@ -83,7 +81,6 @@ async function rateBook(star) {
   const ratingCount = newNotes.length
 
   try {
-
     await updateBook(book.value.id, { totalPoints, ratingCount, userNotes: newNotes })
     book.value.userNotes = newNotes
     book.value.totalPoints = totalPoints
@@ -101,7 +98,7 @@ async function rateBook(star) {
 
 <template>
   <div class="container">
-<BookDetails
+    <BookDetails
       :book="book"
       :loading="loading"
       :canModify="canModify"
@@ -109,44 +106,79 @@ async function rateBook(star) {
       @delete="handleDeleteBook"
     />
 
-      <hr />
+    <hr />
 
-      <div class="rating-box">
-        <span class="score">{{ averageRating }}</span>
-        <div class="stars">
-          <span
-            v-for="star in 5"
-            :key="star"
-            class="star"
-            :class="{ active: star <= (hoverRating || userNote) }"
-            @mouseover="hoverRating = star"
-            @mouseleave="hoverRating = 0"
-            @click="rateBook(star)"
-          >
-            ★
-          </span>
-        </div>
-        <p>({{ book.ratingCount || 0 }} avis)</p>
+    <div class="rating-box">
+      <span class="score">{{ averageRating }}</span>
+      <div class="stars">
+        <span
+          v-for="star in 5"
+          :key="star"
+          class="star"
+          :class="{ active: star <= (hoverRating || userNote) }"
+          @mouseover="hoverRating = star"
+          @mouseleave="hoverRating = 0"
+          @click="rateBook(star)"
+        >
+          ★
+        </span>
       </div>
-      <hr />
-<ShowComments
-        :book="book"
-        :currentUser="currentUser"
-        @commentAdded="onCommentAdded"
-      />
-      </div>
-
+      <p>({{ book.ratingCount || 0 }} avis)</p>
+    </div>
+    <hr />
+    <ShowComments :book="book" :currentUser="currentUser" @commentAdded="onCommentAdded" />
+  </div>
 </template>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Jaldi:wght@400;700&display=swap');
-.container { width: 1400px; margin: 0 auto; padding: 20px; }
-.book-details { font-family: 'Jaldi', sans-serif; display: flex; gap: 40px; margin-top: 20px; }
-.star { color: #ccc; cursor: pointer; font-size: 1.5rem; }
-textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; resize: vertical; }.actions { gap: 20px; display: flex; align-items: center; }
-.star.active { color: #ffca08; }
-.score { font-size: 2rem; font-weight: bold; }
-.rating-box { display: flex; flex-direction: row; gap: 15px; font-family: 'Jaldi', sans-serif; }
-img { max-width: 150px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
-.info-section { justify-content: space-between; }
+.container {
+  width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.book-details {
+  font-family: 'Jaldi', sans-serif;
+  display: flex;
+  gap: 40px;
+  margin-top: 20px;
+}
+.star {
+  color: #ccc;
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  resize: vertical;
+}
+.actions {
+  gap: 20px;
+  display: flex;
+  align-items: center;
+}
+.star.active {
+  color: #ffca08;
+}
+.score {
+  font-size: 2rem;
+  font-weight: bold;
+}
+.rating-box {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  font-family: 'Jaldi', sans-serif;
+}
+img {
+  max-width: 150px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.info-section {
+  justify-content: space-between;
+}
 </style>

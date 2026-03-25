@@ -7,15 +7,18 @@
 
       <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
 
-      <label>Titre
+      <label
+        >Titre
         <input v-model="book.title" required />
       </label>
 
-      <label>Auteur(ice)
+      <label
+        >Auteur(ice)
         <input v-model="book.author" required />
       </label>
 
-      <label>Année de publication
+      <label
+        >Année de publication
         <input v-model="book.publishYear" type="number" />
       </label>
 
@@ -31,11 +34,13 @@
         <option v-for="cat in availableCategories" :key="cat" :value="cat"></option>
       </datalist>
 
-      <label>Description
+      <label
+        >Description
         <textarea v-model="book.description" rows="5"></textarea>
       </label>
 
-      <label>URL de couverture
+      <label
+        >URL de couverture
         <input v-model="book.coverImage" />
       </label>
 
@@ -69,9 +74,7 @@ onMounted(async () => {
 
     // GET /books — fetch all books to populate category suggestions
     const { data: allBooks } = await getAllBooks()
-    availableCategories.value = [...new Set(allBooks.map((b) => b.category))]
-      .filter(Boolean)
-      .sort()
+    availableCategories.value = [...new Set(allBooks.map((b) => b.category))].filter(Boolean).sort()
   } catch (err) {
     console.error('Erreur lors du chargement:', err)
   } finally {
@@ -105,15 +108,28 @@ async function saveChanges() {
   padding: 20px;
   font-family: 'Jaldi', sans-serif;
 }
-.edit-form { display: flex; flex-direction: column; gap: 15px; }
-label { display: flex; flex-direction: column; gap: 5px; font-weight: bold; }
-input, textarea {
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-weight: bold;
+}
+input,
+textarea {
   padding: 8px;
   border-radius: 6px;
   border: 1px solid #ddd;
   font-size: 1rem;
 }
-.buttons { display: flex; gap: 10px; }
+.buttons {
+  display: flex;
+  gap: 10px;
+}
 button {
   padding: 8px 16px;
   background-color: #148867;
@@ -123,5 +139,7 @@ button {
   cursor: pointer;
   font-weight: bold;
 }
-.error { color: red; }
+.error {
+  color: red;
+}
 </style>
